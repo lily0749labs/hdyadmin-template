@@ -37,3 +37,4 @@ go.work
 # Temporary runtime files
 tmp/
 *.log
+__debug_bin*
