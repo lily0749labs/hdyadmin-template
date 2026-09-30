@@ -216,4 +216,4 @@ echo "  gRPC:     $grpc_port"
 echo "  HTTP:     $http_port"
 echo "  Frontend: $frontend_port"
 echo
-echo "下一步：复制 .env.example 为 .env，填写 hdyadmin 开发环境的注册与证书参数。"
+echo "下一步：复制 .env.example 为 .env.local，填写 hdyadmin 开发环境的注册与证书参数。"
