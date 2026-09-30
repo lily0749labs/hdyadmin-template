@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug hdyadmin-template backend",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/app/cmd/server",
+      "cwd": "${workspaceFolder}/app",
+      "args": [
+        "-c",
+        "${workspaceFolder}/app/configs"
+      ],
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "name": "Debug hdyadmin-template backend (standalone insecure)",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/app/cmd/server",
+      "cwd": "${workspaceFolder}/app",
+      "args": [
+        "-c",
+        "${workspaceFolder}/app/configs"
+      ],
+      "env": {
+        "MODULE_TLS_DISABLED": "1",
+        "ADMIN_GRPC_ENDPOINT": "",
+        "MODULE_HTTP_ADDR": "127.0.0.1:10401",
+        "GOLANG_PROTOBUF_REGISTRATION_CONFLICT": "warn"
+      }
+    },
+    {
+      "name": "Debug hdyadmin-template frontend",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "corepack pnpm dev",
+      "cwd": "${workspaceFolder}/frontend"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug hdyadmin-template (backend + frontend)",
+      "configurations": [
+        "Debug hdyadmin-template backend",
+        "Debug hdyadmin-template frontend"
+      ],
+      "stopAll": true
+    }
+  ]
+}

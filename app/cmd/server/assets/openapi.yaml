@@ -1,0 +1,37 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: hdyadmin Template API
+    description: Starter API for an hdyadmin business module
+    version: 1.0.0
+paths:
+    /v1/examples/{name}:
+        get:
+            tags:
+                - ExampleService
+            description: SayHello 返回包含调用参数的问候语。
+            operationId: ExampleService_SayHello
+            parameters:
+                - name: name
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SayHelloResponse'
+components:
+    schemas:
+        SayHelloResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+tags:
+    - name: ExampleService

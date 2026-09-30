@@ -1,0 +1,46 @@
+# hdyadmin-core 在模块注册时读取此文件，创建菜单、权限和默认角色。
+module:
+  id: template
+  name: Template
+  description: Starter module for hdyadmin
+
+menus:
+  - id: template
+    parent_id: null
+    type: CATALOG
+    name: template.menu.root
+    path: /template
+    icon: lucide:blocks
+    order: 900
+    authority:
+      - platform:admin
+      - tenant:manager
+
+  - id: template-example
+    parent_id: template
+    type: MENU
+    name: template.menu.example
+    path: example
+    component: app/template/example/index.vue
+    icon: lucide:flask-conical
+    order: 1
+    authority:
+      - platform:admin
+      - tenant:manager
+
+permission_groups:
+  - name: Template
+    module: template
+    description: Template module permissions
+    permissions:
+      - name: View Example
+        code: template.example.view
+        description: View the example page and call the example API
+
+roles:
+  - name: Template Administrator
+    code: template.admin
+    description: Full access to the Template module
+    is_system: true
+    permissions:
+      - template.example.view

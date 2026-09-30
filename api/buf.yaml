@@ -1,24 +1,22 @@
+# hdyadmin 模块协议。版本保留在 Proto 包名和文件名中。
 version: v2
 
 modules:
   - path: protos
-    lint:
-      use:
-        - STANDARD
-    breaking:
-      use:
-        - FILE
+
 deps:
-  - 'buf.build/googleapis/googleapis'
-  - 'buf.build/kratos/apis'
-  - 'buf.build/gnostic/gnostic'
-  - 'buf.build/tx7do/pagination'
-  - 'buf.build/menta2k-org/redact'
+  - buf.build/googleapis/googleapis
+  - buf.build/bufbuild/protovalidate
+
+lint:
+  use:
+    - STANDARD
+  except:
+    # domain/example_v1.proto 对应 domain.example.v1。
+    - DIRECTORY_SAME_PACKAGE
+    - PACKAGE_DIRECTORY_MATCH
+    - FIELD_NOT_REQUIRED
 
 breaking:
   use:
     - FILE
-
-lint:
-  use:
-    - DEFAULT

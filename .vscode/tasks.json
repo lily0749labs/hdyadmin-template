@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Template: run server",
+      "type": "shell",
+      "command": "make",
+      "args": ["run-server"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Template: run frontend",
+      "type": "shell",
+      "command": "make",
+      "args": ["run-frontend"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Template: test",
+      "type": "shell",
+      "command": "make",
+      "args": ["test"],
+      "group": "test",
+      "problemMatcher": "$go"
+    },
+    {
+      "label": "Template: generate",
+      "type": "shell",
+      "command": "make",
+      "args": ["gen"],
+      "group": "build",
+      "problemMatcher": []
+    }
+  ],
+  "options": {
+    "cwd": "${workspaceFolder}"
+  }
+}

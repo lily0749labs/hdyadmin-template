@@ -1,0 +1,10 @@
+{
+  "menu": {
+    "root": "Example Module",
+    "example": "Connectivity Check"
+  },
+  "page": {
+    "title": "hdyadmin module loaded",
+    "description": "Call the example API to verify the frontend, Core proxy, and module gRPC service."
+  }
+}

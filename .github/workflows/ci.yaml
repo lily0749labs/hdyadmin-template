@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Generate, test and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.4'
+          cache: true
+
+      - name: Setup Buf
+        uses: bufbuild/buf-setup-action@v1
+        with:
+          version: '1.72.0'
+          github_token: ${{ github.token }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '9'
+
+      - name: Install generators
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.12
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.6.2
+          go install github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@v2.9.2
+          go install github.com/google/gnostic/cmd/protoc-gen-openapi@v0.7.1
+          go install github.com/menta2k/protoc-gen-redact/v3@v3.0.0-20260213125431-7688a38967d4
+          go install github.com/go-kratos/protoc-gen-typescript-http@v0.0.0-20260525125049-694cf6cd0529
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate
+        run: make gen
+
+      - name: Verify generated files
+        run: git diff --exit-code
+
+      - name: Lint Proto
+        run: make api-lint
+
+      - name: Test Go
+        run: make test
+
+      - name: Build frontend
+        run: make frontend-build
+
+      - name: Build server
+        run: make build-server

@@ -1,60 +1,88 @@
 ##################################
-# 第一阶段：构建GO可执行文件
+# Stage 0: Generate TypeScript API client
 ##################################
 
-# 使用官方的 Go 基础镜像作为构建环境
-FROM golang:1.24.6 AS builder
+FROM golang:1.25-alpine AS ts-codegen
 
-ARG SERVICE_NAME=app
+ARG BUF_VERSION=1.72.0
+ARG TYPESCRIPT_HTTP_VERSION=v0.0.0-20260525125049-694cf6cd0529
+
+RUN apk add --no-cache curl git && \
+    curl -sSL "https://github.com/bufbuild/buf/releases/download/v${BUF_VERSION}/buf-$(uname -s)-$(uname -m)" -o /usr/local/bin/buf && \
+    chmod +x /usr/local/bin/buf && \
+    go install github.com/go-kratos/protoc-gen-typescript-http@${TYPESCRIPT_HTTP_VERSION}
+
+WORKDIR /src/api
+COPY api/buf.typescript.gen.yaml api/buf.yaml api/buf.lock ./
+COPY api/protos/ protos/
+RUN buf generate --template buf.typescript.gen.yaml
+
+##################################
+# Stage 1: Build frontend remote module
+##################################
+
+FROM node:20-alpine AS frontend-builder
+
+RUN corepack enable && corepack prepare pnpm@9 --activate
+
+WORKDIR /frontend
+COPY frontend/package.json frontend/pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+COPY frontend/ ./
+COPY --from=ts-codegen /src/frontend/src/generated/ src/generated/
+RUN pnpm build
+
+##################################
+# Stage 2: Build Go executable
+##################################
+
+FROM golang:1.25-alpine AS builder
+
+ARG APP_VERSION=1.0.0
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
+
+ENV GOTOOLCHAIN=auto
+
+RUN apk add --no-cache git
+
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+COPY --from=frontend-builder /frontend/dist app/cmd/server/assets/frontend-dist/
+
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
+    go build -ldflags "-X main.version=${APP_VERSION} -s -w" \
+    -o /src/bin/module-server \
+    ./app/cmd/server
+
+##################################
+# Stage 3: Runtime image
+##################################
+
+FROM alpine:3.22
+
 ARG APP_VERSION=1.0.0
 
-# 设置工作目录
-WORKDIR /src
+RUN apk --no-cache add ca-certificates tzdata
 
-# 复制项目源代码到工作目录
-COPY . /src
-
-# 进入到服务目录
-RUN cd /src/app/$SERVICE_NAME/service
-# 创建二进制文件目录
-RUN mkdir -p /src/app/$SERVICE_NAME/service/bin
-
-# 下载依赖，在中国国内，请使用国内代理。有可能会出现下载失败的情况，多试几次即可。
-RUN GOPROXY=https://goproxy.cn go mod download
-# 编译可执行文件
-RUN CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64 \
-    go build -ldflags "-X main.version=$APP_VERSION" -o /src/app/$SERVICE_NAME/service/bin/ ./...
-
-##################################
-# 第二阶段：创建最终的运行时镜像
-##################################
-
-# 使用 Alpine 作为基础镜像，因为它非常轻量级
-FROM alpine:3.18
-
-ARG SERVICE_NAME=app
-
-# 安装必要的证书（如果应用程序需要进行 HTTPS 请求）
-RUN apk --no-cache add ca-certificates
-
-# 设置工作目录
+ENV TZ=UTC
 WORKDIR /app
 
-# 从第一阶段的构建结果中复制可执行文件到当前工作目录
-COPY --from=builder /src/app/$SERVICE_NAME/service/bin/ /app/bin
+COPY --from=builder /src/bin/module-server /app/bin/module-server
+COPY --from=builder /src/app/configs/ /app/configs/
 
-# 拷贝配置文件
-COPY --from=builder /src/app/$SERVICE_NAME/service/configs/ /app/configs
+RUN addgroup -g 1000 module && \
+    adduser -D -u 1000 -G module module && \
+    mkdir -p /app/certs && chown -R module:module /app
 
-# 创建一个名为 appuser 的非 root 用户
-RUN adduser -D appuser
+USER module:module
 
-# 切换到非特权用户
-USER appuser:appuser
+EXPOSE 10400 10401
 
-# 暴露服务端口，根据你的实际服务端口进行修改
+CMD ["/app/bin/module-server", "-c", "/app/configs"]
 
-# 设置容器启动时执行的命令
-CMD ["/app/bin/server", "-conf", "/app/configs"]
+LABEL org.opencontainers.image.title="hdyadmin-template" \
+    org.opencontainers.image.description="hdyadmin pluggable business module" \
+    org.opencontainers.image.version="${APP_VERSION}"

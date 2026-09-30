@@ -1,0 +1,10 @@
+{
+  "menu": {
+    "root": "示例模块",
+    "example": "连通性检查"
+  },
+  "page": {
+    "title": "hdyadmin 模块已加载",
+    "description": "调用示例接口可以验证前端、Core 动态代理和模块 gRPC 服务是否连通。"
+  }
+}

@@ -1,0 +1,18 @@
+# 生成远程前端使用的 TypeScript API 客户端。
+version: v2
+
+clean: true
+
+managed:
+  enabled: true
+  disable:
+    - module: buf.build/googleapis/googleapis
+    - module: buf.build/bufbuild/protovalidate
+
+plugins:
+  - local: protoc-gen-typescript-http
+    out: ../frontend/src/generated/api
+    strategy: all
+
+inputs:
+  - directory: protos

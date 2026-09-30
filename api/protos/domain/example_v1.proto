@@ -1,0 +1,31 @@
+// 模板示例协议。创建实际模块时可以保留它用于连通性检查，也可以替换为业务协议。
+syntax = "proto3";
+
+package domain.example.v1;
+
+import "buf/validate/validate.proto";
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+
+// ExampleService 提供最小的端到端接口，用于验证模块注册和动态代理。
+service ExampleService {
+  // SayHello 返回包含调用参数的问候语。
+  rpc SayHello(SayHelloRequest) returns (SayHelloResponse) {
+    option (google.api.http) = {get: "/v1/examples/{name}"};
+  }
+}
+
+message SayHelloRequest {
+  string name = 1 [
+    json_name = "name",
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 100
+    }
+  ];
+}
+
+message SayHelloResponse {
+  string message = 1 [json_name = "message"];
+}

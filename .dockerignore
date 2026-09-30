@@ -1,0 +1,17 @@
+.git
+.github
+.vscode
+.env
+.idea
+.pnpm-store
+bin
+certs
+coverage.out
+coverage.html
+frontend/node_modules
+frontend/dist
+tmp
+**/.DS_Store
+
+app/cmd/server/assets/frontend-dist/*
+!app/cmd/server/assets/frontend-dist/.gitkeep
