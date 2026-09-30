@@ -1,7 +1,8 @@
 # hdyadmin 独立业务模块构建入口
 
-ifneq (,$(wildcard .env))
-    include .env
+ENV_FILE := $(firstword $(wildcard .env.local .env))
+ifneq (,$(ENV_FILE))
+    include $(ENV_FILE)
     export
 endif
 

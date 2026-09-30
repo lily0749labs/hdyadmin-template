@@ -2,20 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug hdyadmin-template backend",
-      "type": "go",
-      "request": "launch",
-      "mode": "debug",
-      "program": "${workspaceFolder}/app/cmd/server",
-      "cwd": "${workspaceFolder}/app",
-      "args": [
-        "-c",
-        "${workspaceFolder}/app/configs"
-      ],
-      "envFile": "${workspaceFolder}/.env"
-    },
-    {
-      "name": "Debug hdyadmin-template backend (standalone insecure)",
+      "name": "Debug hdyadmin-template backend (standalone)",
       "type": "go",
       "request": "launch",
       "mode": "debug",
@@ -33,6 +20,19 @@
       }
     },
     {
+      "name": "Debug hdyadmin-template backend (connected)",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/app/cmd/server",
+      "cwd": "${workspaceFolder}/app",
+      "args": [
+        "-c",
+        "${workspaceFolder}/app/configs"
+      ],
+      "envFile": "${workspaceFolder}/.env.local"
+    },
+    {
       "name": "Debug hdyadmin-template frontend",
       "type": "node-terminal",
       "request": "launch",
@@ -42,9 +42,17 @@
   ],
   "compounds": [
     {
-      "name": "Debug hdyadmin-template (backend + frontend)",
+      "name": "Debug hdyadmin-template standalone (backend + frontend)",
       "configurations": [
-        "Debug hdyadmin-template backend",
+        "Debug hdyadmin-template backend (standalone)",
+        "Debug hdyadmin-template frontend"
+      ],
+      "stopAll": true
+    },
+    {
+      "name": "Debug hdyadmin-template connected (backend + frontend)",
+      "configurations": [
+        "Debug hdyadmin-template backend (connected)",
         "Debug hdyadmin-template frontend"
       ],
       "stopAll": true

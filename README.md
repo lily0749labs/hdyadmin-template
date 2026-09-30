@@ -54,7 +54,7 @@ make frontend-install
 复制并填写环境变量：
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 ```
 
 需要与 `hdyadmin` 开发环境保持一致的变量包括：
@@ -71,7 +71,9 @@ make run-server
 make run-frontend
 ```
 
-也可以在 VS Code 中运行 `Debug hdyadmin-template (backend + frontend)`。
+不连接 hdyadmin 外部服务时，可以在 VS Code 中直接运行
+`Debug hdyadmin-template backend (standalone)`。联调完整环境时，先创建 `.env.local`，再运行
+`Debug hdyadmin-template connected (backend + frontend)`。
 
 默认地址：
 

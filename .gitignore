@@ -12,6 +12,7 @@ coverage.html
 
 # Local configuration and certificates
 .env
+.env.local
 *.cert
 *.key
 certs/
