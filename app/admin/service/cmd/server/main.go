@@ -36,7 +36,7 @@ import (
 
 	//_ "github.com/tx7do/kratos-bootstrap/tracer"
 
-	"github.com/tx7do/go-wind-admin-template/pkg/serviceid"
+	"github.com/neo-fork-gotangra/hdyadmin-template/pkg/serviceid"
 )
 
 var version = "1.0.0"

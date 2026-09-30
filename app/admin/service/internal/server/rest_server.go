@@ -10,10 +10,10 @@ import (
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 	"github.com/tx7do/kratos-bootstrap/rpc"
 
-	"github.com/tx7do/go-wind-admin-template/app/admin/service/cmd/server/assets"
-	"github.com/tx7do/go-wind-admin-template/app/admin/service/internal/service"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/service/cmd/server/assets"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/service/internal/service"
 
-	adminV1 "github.com/tx7do/go-wind-admin-template/api/gen/go/admin/service/v1"
+	adminV1 "github.com/neo-fork-gotangra/hdyadmin-template/api/gen/go/admin/service/v1"
 )
 
 type RestMiddlewares []middleware.Middleware

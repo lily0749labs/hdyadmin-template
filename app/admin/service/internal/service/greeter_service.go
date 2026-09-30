@@ -6,9 +6,9 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
-	"github.com/tx7do/go-wind-admin-template/app/admin/service/internal/data"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/service/internal/data"
 
-	helloworldV1 "github.com/tx7do/go-wind-admin-template/api/gen/go/helloworld/service/v1"
+	helloworldV1 "github.com/neo-fork-gotangra/hdyadmin-template/api/gen/go/helloworld/service/v1"
 )
 
 // GreeterService is a greeter service.

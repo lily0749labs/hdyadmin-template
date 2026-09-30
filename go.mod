@@ -1,4 +1,4 @@
-module github.com/tx7do/go-wind-admin-template
+module github.com/neo-fork-gotangra/hdyadmin-template
 
 go 1.25.4
 

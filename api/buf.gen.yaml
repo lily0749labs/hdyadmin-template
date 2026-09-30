@@ -17,7 +17,7 @@ managed:
 
   override:
     - file_option: go_package_prefix
-      value: github.com/tx7do/go-wind-admin-template/api/gen/go
+      value: github.com/neo-fork-gotangra/hdyadmin-template/api/gen/go
 
 plugins:
   # generate go code

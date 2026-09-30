@@ -4,9 +4,9 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
-	"github.com/tx7do/go-wind-admin-template/app/admin/service/internal/data"
-	"github.com/tx7do/go-wind-admin-template/app/admin/service/internal/server"
-	"github.com/tx7do/go-wind-admin-template/app/admin/service/internal/service"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/service/internal/data"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/service/internal/server"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/service/internal/service"
 )
 
 // initApp 手写装配整个应用,是本服务的依赖注入点。
