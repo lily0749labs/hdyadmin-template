@@ -19,7 +19,7 @@ include $(CURRENT_DIR)/docker.mk
 BUF_VERSION ?= v1.72.0
 PROTOBUF_VERSION ?= v1.36.12
 GRPC_GO_VERSION ?= v1.6.2
-KRATOS_VERSION ?= v2.9.2
+KRATOS_TOOL_VERSION ?= v2.0.0-20260404020628-f149714c1d54
 GNOSTIC_VERSION ?= v0.7.1
 WIRE_VERSION ?= v0.7.0
 REDACT_VERSION ?= v3.0.0-20260213125431-7688a38967d4
@@ -36,7 +36,7 @@ tools:
 	@go install github.com/bufbuild/buf/cmd/buf@$(BUF_VERSION)
 	@go install google.golang.org/protobuf/cmd/protoc-gen-go@$(PROTOBUF_VERSION)
 	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@$(GRPC_GO_VERSION)
-	@go install github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@$(KRATOS_VERSION)
+	@go install github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@$(KRATOS_TOOL_VERSION)
 	@go install github.com/google/gnostic/cmd/protoc-gen-openapi@$(GNOSTIC_VERSION)
 	@go install github.com/menta2k/protoc-gen-redact/v3@$(REDACT_VERSION)
 	@go install github.com/go-kratos/protoc-gen-typescript-http@$(TYPESCRIPT_HTTP_VERSION)
