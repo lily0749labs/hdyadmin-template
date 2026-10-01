@@ -193,7 +193,7 @@ initialize_module() {
 	local old_name="Tem""plate"
 	local old_repo="hdyadmin-""template"
 	local old_brand="hdy""admin"
-	local module_env_prefix current_go_module file tool
+	local module_env_prefix current_go_module transformed_go_module file tool
 	local -a metadata_files generation_tools missing_tools
 
 	(
@@ -210,18 +210,8 @@ initialize_module() {
 			echo "❌ 无法从 go.mod 读取当前 Go module。" >&2
 			exit 1
 		fi
-
-		# 只在 Go 源码和 Buf 配置中替换 module 前缀，避免短 module 名误伤普通路径。
-		while IFS= read -r -d '' file; do
-			replace_in_file "$current_go_module/" "$go_module/" "$file"
-		done < <(
-			find app api/tools \
-				-type f -name '*.go' \
-				! -path '*/vendor/*' \
-				-print0 2>/dev/null
-		)
-		replace_in_file "$current_go_module/" "$go_module/" api/buf.gen.yaml
-		replace_in_file "$current_go_module/" "$go_module/" api/buf.openapi.gen.yaml
+		transformed_go_module="${current_go_module//$old_repo/$project_name}"
+		transformed_go_module="${transformed_go_module//$old_brand/$project_prefix}"
 
 		replace_project_text "$old_repo" "$project_name"
 		replace_project_text "10400" "$grpc_port"
@@ -270,6 +260,19 @@ initialize_module() {
 		# 项目前缀同时作为品牌标识，更新页面文案、AppId、OpenAPI 和依赖组件名称等文本。
 		replace_project_text "$old_brand" "$project_prefix"
 		replace_in_file 'DEFAULT_PROJECT_PREFIX="hdyadmin"' "DEFAULT_PROJECT_PREFIX=\"$project_prefix\"" scripts/new-module.sh
+
+		# 最后写入用户提供的 Go module，避免其中的品牌字符串被前面的替换规则误改。
+		# 只更新 Go 源码和 Buf 配置中的 module 前缀，避免短 module 名误伤普通路径。
+		while IFS= read -r -d '' file; do
+			replace_in_file "$transformed_go_module/" "$go_module/" "$file"
+		done < <(
+			find app api/tools \
+				-type f -name '*.go' \
+				! -path '*/vendor/*' \
+				-print0 2>/dev/null
+		)
+		replace_in_file "$transformed_go_module/" "$go_module/" api/buf.gen.yaml
+		replace_in_file "$transformed_go_module/" "$go_module/" api/buf.openapi.gen.yaml
 
 		go mod edit -module "$go_module"
 
