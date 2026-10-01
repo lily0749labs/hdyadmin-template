@@ -72,14 +72,22 @@ cp .env.example .env.local
 - `LCM_CA_FINGERPRINT`
 - `ADMIN_GRPC_ENDPOINT`
 
-分别启动后端和远程前端：
+不连接 LCM 和 Core 时，以 standalone 模式启动后端：
+
+```bash
+make run
+```
+
+standalone 模式仅用于本地开发和冒烟测试，会关闭模块 mTLS，并跳过向 Core 注册。
+
+联调完整环境时，先确保 `.env.local` 中的 LCM/Core 地址和凭据正确，再分别启动后端和远程前端：
 
 ```bash
 make run-server
 make run-frontend
 ```
 
-不连接 hdyadmin 外部服务时，可以在 VS Code 中直接运行
+也可以在 VS Code 中直接运行
 `Debug hdyadmin-template backend (standalone)`。联调完整环境时，先创建 `.env.local`，再运行
 `Debug hdyadmin-template connected (backend + frontend)`。
 
@@ -109,6 +117,8 @@ make descriptor        生成 Proto descriptor
 make wire              生成依赖注入代码
 make api-lint          检查 Proto
 make test              运行 Go 测试
+make run               standalone 模式启动后端
+make run-server        连接 LCM/Core 启动后端
 make frontend-build    构建远程前端
 make build-server      构建 bin/hdyadmin-template-admin
 make build             构建前后端和最终服务端

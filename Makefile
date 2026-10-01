@@ -27,7 +27,7 @@ TYPESCRIPT_HTTP_VERSION ?= v0.0.0-20260525125049-694cf6cd0529
 
 .PHONY: help tools gen api api-typescript ts openapi descriptor wire api-lint api-format \
 	frontend-install frontend-build embed-frontend build build-server run run-server \
-	run-frontend test test-cover check clean
+	run-standalone run-frontend test test-cover check clean
 
 .NOTPARALLEL: gen build
 
@@ -88,8 +88,15 @@ build-server:
 	@echo "构建 $(BINARY_NAME)..."
 	@go build $(GOFLAGS) -ldflags "$(LDFLAGS)" -o ./bin/$(BINARY_NAME) ./app/admin/cmd/server
 
-run: run-server
+# 默认以 standalone 模式启动，不依赖 hdyadmin-lcm 和 hdyadmin-core。
+run: run-standalone
 
+run-standalone:
+	@MODULE_TLS_DISABLED=1 \
+		ADMIN_GRPC_ENDPOINT= \
+		go run ./app/admin/cmd/server -c ./app/admin/configs
+
+# 完整联调模式：使用 .env.local/.env 连接 LCM 申请证书并注册到 Core。
 run-server:
 	@go run ./app/admin/cmd/server -c ./app/admin/configs
 
@@ -122,7 +129,8 @@ help:
 	@echo "  make openapi           生成 OpenAPI 文档"
 	@echo "  make descriptor        生成 Proto 描述文件"
 	@echo "  make api-lint          检查 Proto 协议及格式"
-	@echo "  make run-server        启动后端"
+	@echo "  make run               独立启动后端，不连接 LCM/Core"
+	@echo "  make run-server        联调启动后端，连接 LCM/Core"
 	@echo "  make run-frontend      启动远程前端"
 	@echo "  make check             运行协议、Go 和前端检查"
 	@echo "  make build             构建完整模块"
