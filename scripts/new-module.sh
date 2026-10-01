@@ -36,7 +36,7 @@ usage() {
     [--interactive]
 
 必填参数：
-  --target DIR        新项目目录，必须不存在
+  --target DIR        新项目目录；已存在时会询问是否删除并重新创建
   --id ID             模块 ID：小写字母开头，只允许小写字母、数字和连字符
   --name NAME         模块展示名称
   --go-module PATH    Go module 路径，例如 github.com/example/acme-vip
@@ -145,6 +145,40 @@ prompt_yes_no() {
 		*) echo "❌ 请输入 y 或 n。" >&2 ;;
 		esac
 	done
+}
+
+print_effective_parameters() {
+	local branch_display="${branch:-（远程默认分支）}"
+	local skip_frontend_display="否"
+	local skip_check_display="否"
+	local interactive_display="否"
+	local overwrite_display="否"
+
+	[[ "$skip_frontend" == "1" ]] && skip_frontend_display="是"
+	[[ "$skip_check" == "1" ]] && skip_check_display="是"
+	[[ "$interactive" == "1" ]] && interactive_display="是"
+	[[ "$overwrite_target" == "1" ]] && overwrite_display="是"
+
+	echo "📋 本次创建使用的全部参数（包含默认值）："
+	printf '  %-20s %s\n' "--target" "$target"
+	printf '  %-20s %s\n' "--id" "$module_id"
+	printf '  %-20s %s\n' "--name" "$module_name"
+	printf '  %-20s %s\n' "--project-prefix" "$project_prefix"
+	printf '  %-20s %s\n' "项目名称" "$project_name"
+	printf '  %-20s %s\n' "--go-module" "$go_module"
+	printf '  %-20s %s\n' "--description" "$description"
+	printf '  %-20s %s\n' "--menu-name-en" "$menu_name_en"
+	printf '  %-20s %s\n' "--menu-name-zh" "$menu_name_zh"
+	printf '  %-20s %s\n' "--grpc-port" "$grpc_port"
+	printf '  %-20s %s\n' "--http-port" "$http_port"
+	printf '  %-20s %s\n' "--frontend-port" "$frontend_port"
+	printf '  %-20s %s\n' "--repo-url" "$repo_url"
+	printf '  %-20s %s\n' "--branch" "$branch_display"
+	printf '  %-20s %s\n' "--skip-frontend" "$skip_frontend_display"
+	printf '  %-20s %s\n' "--skip-check" "$skip_check_display"
+	printf '  %-20s %s\n' "--interactive" "$interactive_display"
+	printf '  %-20s %s\n' "覆盖已有目标" "$overwrite_display"
+	echo
 }
 
 replace_in_file() {
@@ -309,6 +343,7 @@ branch=""
 skip_frontend="0"
 skip_check="0"
 interactive="0"
+overwrite_target="0"
 
 while (($# > 0)); do
 	case "$1" in
@@ -462,9 +497,16 @@ if ((10#$grpc_port == 10#$http_port || 10#$grpc_port == 10#$frontend_port || 10#
 fi
 
 if [[ -e "$target" || -L "$target" ]]; then
-	echo "❌ 目标目录已经存在，为避免覆盖已停止：$target" >&2
-	exit 1
+	echo "⚠️ 目标目录已经存在：$target" >&2
+	prompt_yes_no "继续将删除并重新创建该目录，是否继续" "0" overwrite_target
+	if [[ "$overwrite_target" != "1" ]]; then
+		echo "已取消，现有目录未作修改：$target"
+		exit 0
+	fi
+	echo
 fi
+
+print_effective_parameters
 
 required_commands=(git go make perl)
 if [[ "$skip_check" == "0" ]]; then
@@ -563,16 +605,41 @@ else
 	echo "⚠️ 已跳过初始化后检查；使用项目前请补充执行 make tools、make gen 和 make check。"
 fi
 
-# 克隆和校验期间如果目标路径被其他进程创建，不将项目移入已有目录。
+# 克隆和校验期间如果目标路径被其他进程创建，且未获覆盖确认，则停止安装。
 if [[ -e "$target_dir" || -L "$target_dir" ]]; then
-	echo "❌ 目标目录在创建过程中已出现，已停止以避免覆盖：$target_dir" >&2
-	exit 1
-fi
+	if [[ "$overwrite_target" != "1" ]]; then
+		echo "❌ 目标目录在创建过程中已出现，已停止以避免覆盖：$target_dir" >&2
+		exit 1
+	fi
 
-mv "$staged_target" "$target_dir"
-rmdir "$staging_root"
-staging_root=""
-trap - EXIT
+	backup_target="${target_dir}.new-module-backup.$$"
+	if [[ -e "$backup_target" || -L "$backup_target" ]]; then
+		echo "❌ 备份路径已经存在，无法安全替换目标目录：$backup_target" >&2
+		exit 1
+	fi
+
+	echo "♻️  替换已有目标目录：$target_dir"
+	mv "$target_dir" "$backup_target"
+	if mv "$staged_target" "$target_dir"; then
+		find "$backup_target" -depth -delete
+	else
+		move_status=$?
+		echo "❌ 安装新项目失败，正在恢复原目录：$target_dir" >&2
+		if [[ ! -e "$target_dir" && ! -L "$target_dir" ]]; then
+			mv "$backup_target" "$target_dir"
+		fi
+		exit "$move_status"
+	fi
+
+	rmdir "$staging_root"
+	staging_root=""
+	trap - EXIT
+else
+	mv "$staged_target" "$target_dir"
+	rmdir "$staging_root"
+	staging_root=""
+	trap - EXIT
+fi
 
 echo
 echo "✅ 业务模块已创建：$target_dir"
