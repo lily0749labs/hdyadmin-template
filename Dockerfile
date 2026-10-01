@@ -5,7 +5,7 @@
 FROM golang:1.25-alpine AS ts-codegen
 
 ARG BUF_VERSION=1.72.0
-ARG TYPESCRIPT_HTTP_VERSION=v0.0.0-20260525125049-694cf6cd0529
+ARG TYPESCRIPT_HTTP_VERSION=latest
 
 RUN apk add --no-cache curl git && \
     curl -sSL "https://github.com/bufbuild/buf/releases/download/v${BUF_VERSION}/buf-$(uname -s)-$(uname -m)" -o /usr/local/bin/buf && \

@@ -23,7 +23,7 @@ KRATOS_TOOL_VERSION ?= v2.0.0-20260404020628-f149714c1d54
 GNOSTIC_VERSION ?= v0.7.1
 WIRE_VERSION ?= v0.7.0
 REDACT_VERSION ?= v3.0.0-20260213125431-7688a38967d4
-TYPESCRIPT_HTTP_VERSION ?= v0.0.0-20260525125049-694cf6cd0529
+TYPESCRIPT_HTTP_VERSION ?= latest
 
 .PHONY: help tools gen api api-typescript ts openapi descriptor wire api-lint api-format \
 	frontend-install frontend-build embed-frontend build build-server run run-server \
