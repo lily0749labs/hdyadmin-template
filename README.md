@@ -54,7 +54,8 @@ make run-frontend
 ```
 
 浏览器访问 `http://localhost:3011`。此模式关闭模块 mTLS、跳过 Core 注册，并由 Vite 将
-`/api` 请求代理到模块的 `10401` HTTP 端口，仅用于本地开发和冒烟测试。
+`/api` 请求代理到模块的 `10401` HTTP 端口，仅用于本地开发和冒烟测试。standalone
+调试壳会根据 `frontend/admin/src/routes.ts` 自动生成路由和侧边菜单，新增页面不需要维护第二份菜单。
 
 联调完整环境时，先确保 `.env.local` 中的 LCM/Core 地址和凭据正确，再分别启动后端和远程前端：
 

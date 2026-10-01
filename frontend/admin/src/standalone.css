@@ -13,6 +13,106 @@ body {
 }
 
 #app {
-  max-width: 960px;
-  margin: 48px auto;
+  min-height: 100vh;
+}
+
+.standalone-shell {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 240px minmax(0, 1fr);
+}
+
+.standalone-sidebar {
+  display: flex;
+  position: sticky;
+  top: 0;
+  flex-direction: column;
+  height: 100vh;
+  padding: 24px 16px;
+  color: #e5e7eb;
+  background: #111827;
+}
+
+.standalone-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 12px 24px;
+}
+
+.standalone-brand strong {
+  color: #fff;
+  font-size: 20px;
+}
+
+.standalone-brand span,
+.standalone-mode {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.standalone-menu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.standalone-menu .standalone-menu {
+  margin-top: 6px;
+}
+
+.standalone-menu-group {
+  padding: 10px 12px 6px;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.standalone-menu-link {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: #d1d5db;
+  text-decoration: none;
+}
+
+.standalone-menu-link:hover,
+.standalone-menu-link.router-link-active {
+  color: #fff;
+  background: #2563eb;
+}
+
+.standalone-mode {
+  margin-top: auto;
+  padding: 16px 12px 0;
+  border-top: 1px solid #374151;
+}
+
+.standalone-main {
+  min-width: 0;
+}
+
+.standalone-header {
+  height: 56px;
+  padding: 0 24px;
+  border-bottom: 1px solid #e5e7eb;
+  line-height: 56px;
+  background: #fff;
+}
+
+@media (max-width: 720px) {
+  .standalone-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .standalone-sidebar {
+    position: static;
+    height: auto;
+  }
+
+  .standalone-mode {
+    display: none;
+  }
 }
