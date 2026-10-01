@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	// 这些模板值会由 scripts/init-module.sh 统一替换。
+	// 这些模板值会由 scripts/new-module.sh 统一替换。
 	moduleID    = "template"
 	moduleName  = "Template"
 	version     = "1.0.0"

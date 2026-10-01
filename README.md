@@ -13,39 +13,25 @@
 
 ## 快速创建新模块
 
-已经安装或编译 `gohdy` 时，可以一条命令完成模板复制、模块初始化、代码生成、
-Go 测试、服务端构建以及前端依赖安装和构建：
+可以一条命令完成模板克隆、模块初始化、代码生成、Go 测试、服务端构建以及
+前端依赖安装和构建，不依赖 `gohdy`：
 
 ```bash
 ./scripts/new-module.sh \
   --target /path/to/examples/vip \
   --id vip \
   --name "VIP" \
-  --go-module github.com/example/hdyadmin-vip \
-  --gohdy-bin /path/to/gohdy/bin/gohdy
+  --go-module github.com/example/hdyadmin-vip
 ```
 
-脚本内部使用 `gohdy new project`，然后调用下方的初始化脚本。若开发机已经安装
-`gohdy` 并可从 `PATH` 找到，可以省略 `--gohdy-bin`。仅希望跳过前端依赖安装和构建时
-传入 `--skip-frontend`；调试脚本流程时可用 `--skip-check` 跳过最终检查。
+`new-module.sh` 已包含模板克隆和初始化逻辑，可以单独复制到任意目录执行，不依赖
+`gohdy` 或其他项目脚本。它会统一更新 Go module、注册信息、菜单、前端路由、开发端口、
+Docker 镜像名和调试配置。仅希望跳过前端依赖安装和构建时传入 `--skip-frontend`；调试
+脚本流程时可用 `--skip-check` 跳过最终检查。可通过 `--repo-url` 使用其他远程或本地模板
+仓库，通过 `--branch` 指定模板分支。
 
-也可以先通过其他方式复制模板，再单独执行初始化：
-
-从本仓库创建新项目后，先执行初始化脚本。模块 ID 只能包含小写字母、数字和连字符，
-一旦部署后不应再修改。
-
-```bash
-./scripts/init-module.sh \
-  --id vip \
-  --name "VIP" \
-  --go-module github.com/example/hdyadmin-vip \
-  --grpc-port 10400 \
-  --http-port 10401 \
-  --frontend-port 3011
-```
-
-脚本会统一更新 Go module、注册信息、菜单、前端路由、开发端口、Docker 镜像名和调试配置。
-初始化完成后提交一次基线版本，再开始添加业务代码。
+模块 ID 只能包含小写字母、数字和连字符，一旦部署后不应再修改。初始化完成后建议提交
+一次基线版本，再开始添加业务代码。
 
 ## 环境准备
 
@@ -138,8 +124,7 @@ app/internal/service/             业务服务
 app/internal/server/              gRPC 与资源 HTTP 服务
 app/internal/security/cert/       LCM/mTLS 证书引导
 frontend/                         管理后台远程模块
-scripts/new-module.sh             调用 gohdy 的一键创建入口
-scripts/init-module.sh            新模块初始化脚本
+scripts/new-module.sh             克隆模板并初始化的一键创建入口
 ```
 
 添加业务时通常按以下顺序进行：
