@@ -122,9 +122,15 @@ make run-server        连接 LCM/Core 启动后端
 make frontend-build    构建远程前端
 make build-server      构建 bin/hdyadmin-template-admin
 make build             构建前后端和最终服务端
+make clean             清理构建产物，保留前端依赖
+make clean-all         清理构建产物、前端依赖和项目内缓存
 make docker            构建当前架构镜像并加载到本地 Docker
 make docker-push       构建并推送 amd64、arm64 镜像
 ```
+
+`make clean` 会删除 `bin/`、前端 `dist/`、Module Federation 临时目录、覆盖率报告和嵌入式前端产物，
+但保留 `node_modules/` 以便继续开发；需要释放依赖占用空间时使用 `make clean-all`。提交到版本库的
+Proto/TypeScript 生成代码、OpenAPI、Descriptor、Wire 文件以及 `.env.local` 不在清理范围内。
 
 `api/pb/`、`frontend/admin/src/generated/api/`、`openapi.yaml` 和 `descriptor.bin` 会提交到版本库，
 保证新克隆的项目可以直接执行 `go mod tidy` 和 `go test ./...`。修改 Proto 后必须重新执行

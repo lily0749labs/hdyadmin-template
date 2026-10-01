@@ -27,7 +27,7 @@ TYPESCRIPT_HTTP_VERSION ?= v0.0.0-20260525125049-694cf6cd0529
 
 .PHONY: help tools gen api api-typescript ts openapi descriptor wire api-lint api-format \
 	frontend-install frontend-build embed-frontend build build-server run run-server \
-	run-standalone run-frontend test test-cover check clean
+	run-standalone run-frontend test test-cover check clean clean-all
 
 .NOTPARALLEL: gen build
 
@@ -114,11 +114,14 @@ test-cover:
 check: api-lint test frontend-build
 
 clean:
-	@find bin -mindepth 1 -delete 2>/dev/null || true
-	@find frontend/admin/dist -mindepth 1 -delete 2>/dev/null || true
+	@find bin frontend/admin/dist frontend/admin/.__mf__temp -depth -delete 2>/dev/null || true
 	@find app/admin/cmd/server/assets/frontend-dist -mindepth 1 ! -name .gitkeep -delete
-	@rm -f coverage.out coverage.html
-	@echo "构建产物已清理。"
+	@find coverage.out coverage.html -type f -delete 2>/dev/null || true
+	@echo "构建产物已清理（保留 frontend/admin/node_modules）。"
+
+clean-all: clean
+	@find frontend/admin/node_modules .pnpm-store frontend/admin/.pnpm-store -depth -delete 2>/dev/null || true
+	@echo "前端依赖和项目内 pnpm 缓存已清理。"
 
 help:
 	@echo "hdyadmin-template 可用目标："
@@ -134,6 +137,8 @@ help:
 	@echo "  make run-frontend      启动远程前端"
 	@echo "  make check             运行协议、Go 和前端检查"
 	@echo "  make build             构建完整模块"
+	@echo "  make clean             清理构建产物，保留前端依赖"
+	@echo "  make clean-all         清理构建产物、前端依赖和项目内缓存"
 	@echo "  make docker            构建当前架构镜像并加载到本地 Docker"
 	@echo "  make docker-push       构建并推送 amd64、arm64 镜像"
 
