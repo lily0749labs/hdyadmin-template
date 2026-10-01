@@ -9,7 +9,8 @@ endif
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 GOFLAGS ?=
 LDFLAGS ?= -X main.version=$(VERSION)
-IMAGE_NAME ?= hdyadmin-template
+BINARY_NAME ?= hdyadmin-template-admin
+IMAGE_NAME ?= $(BINARY_NAME)
 IMAGE_TAG ?= $(VERSION)
 DOCKER_REGISTRY ?=
 
@@ -82,8 +83,8 @@ build: gen embed-frontend build-server
 
 build-server:
 	@mkdir -p ./bin
-	@echo "构建 hdyadmin-template 服务端..."
-	@go build $(GOFLAGS) -ldflags "$(LDFLAGS)" -o ./bin/module-server ./app/admin/cmd/server
+	@echo "构建 $(BINARY_NAME)..."
+	@go build $(GOFLAGS) -ldflags "$(LDFLAGS)" -o ./bin/$(BINARY_NAME) ./app/admin/cmd/server
 
 run: run-server
 

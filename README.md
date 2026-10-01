@@ -18,17 +18,20 @@
 
 ```bash
 ./scripts/new-module.sh \
-  --target /path/to/examples/vip \
+  --target /path/to/examples/tangra-vip \
   --id vip \
   --name "VIP" \
-  --go-module github.com/example/hdyadmin-vip
+  --project-prefix tangra \
+  --go-module github.com/example/tangra-vip
 ```
 
 `new-module.sh` 已包含模板克隆和初始化逻辑，可以单独复制到任意目录执行，不依赖
 `gohdy` 或其他项目脚本。它会统一更新 Go module、注册信息、菜单、前端路由、开发端口、
 Docker 镜像名和调试配置。仅希望跳过前端依赖安装和构建时传入 `--skip-frontend`；调试
 脚本流程时可用 `--skip-check` 跳过最终检查。可通过 `--repo-url` 使用其他远程或本地模板
-仓库，通过 `--branch` 指定模板分支。
+仓库，通过 `--branch` 指定模板分支。`--project-prefix` 用于配置项目、可执行文件和镜像的
+命名前缀，默认值为 `hdyadmin`；例如传入 `--project-prefix tangra --id vip` 会生成
+`tangra-vip-admin`。
 
 模块 ID 只能包含小写字母、数字和连字符，一旦部署后不应再修改。初始化完成后建议提交
 一次基线版本，再开始添加业务代码。
@@ -106,6 +109,7 @@ make wire              生成依赖注入代码
 make api-lint          检查 Proto
 make test              运行 Go 测试
 make frontend-build    构建远程前端
+make build-server      构建 bin/hdyadmin-template-admin
 make build             构建前后端和最终服务端
 make docker            构建容器镜像
 ```

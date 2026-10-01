@@ -54,7 +54,7 @@ COPY --from=frontend-builder /frontend/admin/dist app/admin/cmd/server/assets/fr
 
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
     go build -ldflags "-X main.version=${APP_VERSION} -s -w" \
-    -o /src/bin/module-server \
+    -o /src/bin/hdyadmin-template-admin \
     ./app/admin/cmd/server
 
 ##################################
@@ -70,7 +70,7 @@ RUN apk --no-cache add ca-certificates tzdata
 ENV TZ=UTC
 WORKDIR /app
 
-COPY --from=builder /src/bin/module-server /app/bin/module-server
+COPY --from=builder /src/bin/hdyadmin-template-admin /app/bin/hdyadmin-template-admin
 COPY --from=builder /src/app/admin/configs/ /app/configs/
 
 RUN addgroup -g 1000 module && \
@@ -81,8 +81,8 @@ USER module:module
 
 EXPOSE 10400 10401
 
-CMD ["/app/bin/module-server", "-c", "/app/configs"]
+CMD ["/app/bin/hdyadmin-template-admin", "-c", "/app/configs"]
 
-LABEL org.opencontainers.image.title="hdyadmin-template" \
-    org.opencontainers.image.description="hdyadmin pluggable business module" \
+LABEL org.opencontainers.image.title="hdyadmin-template-admin" \
+    org.opencontainers.image.description="hdyadmin-template pluggable business module" \
     org.opencontainers.image.version="${APP_VERSION}"

@@ -21,6 +21,7 @@ usage() {
     --id <模块ID> \
     --name <展示名称> \
     --go-module <Go模块路径> \
+    [--project-prefix <项目前缀>] \
     [--description <描述>] \
     [--menu-name-en <英文菜单名>] \
     [--menu-name-zh <中文菜单名>] \
@@ -40,6 +41,7 @@ usage() {
   --go-module PATH    Go module 路径，例如 github.com/example/hdyadmin-vip
 
 可选参数：
+  --project-prefix PREFIX  项目名前缀（默认 hdyadmin），用于项目、可执行文件和镜像命名
   --description TEXT  模块描述（默认由模板根据展示名生成）
   --menu-name-en TEXT 英文菜单名（默认为“<展示名称> Module”）
   --menu-name-zh TEXT 中文菜单名（默认为“<展示名称>模块”）
@@ -58,6 +60,7 @@ usage() {
     --target ../hdyadmin-vip \
     --id vip \
     --name VIP \
+    --project-prefix hdyadmin \
     --go-module github.com/example/hdyadmin-vip
 
 说明：
@@ -218,7 +221,7 @@ initialize_module() {
 		replace_in_file "$current_go_module/" "$go_module/" api/buf.gen.yaml
 		replace_in_file "$current_go_module/" "$go_module/" api/buf.openapi.gen.yaml
 
-		replace_project_text "$old_repo" "hdyadmin-$module_id"
+		replace_project_text "$old_repo" "$project_name"
 		replace_project_text "10400" "$grpc_port"
 		replace_project_text "10401" "$http_port"
 		replace_project_text "3011" "$frontend_port"
@@ -282,6 +285,8 @@ target=""
 module_id=""
 module_name=""
 go_module=""
+project_prefix="hdyadmin"
+project_name=""
 description=""
 menu_name_en=""
 menu_name_zh=""
@@ -314,6 +319,11 @@ while (($# > 0)); do
 	--go-module)
 		require_option_value "$@"
 		go_module="$2"
+		shift 2
+		;;
+	--project-prefix)
+		require_option_value "$@"
+		project_prefix="$2"
 		shift 2
 		;;
 	--description)
@@ -384,8 +394,9 @@ if [[ "$interactive" == "1" ]]; then
 	echo
 	prompt_value "模块 ID" "$module_id" 1 module_id
 	prompt_value "展示名称" "$module_name" 1 module_name
+	prompt_value "项目前缀" "$project_prefix" 1 project_prefix
 	prompt_value "Go module 路径" "$go_module" 1 go_module
-	[[ -n "$target" ]] || target="./hdyadmin-$module_id"
+	[[ -n "$target" ]] || target="./$project_prefix-$module_id"
 	prompt_value "目标目录" "$target" 1 target
 	prompt_value "模块描述（留空使用模板默认值）" "$description" 0 description
 	prompt_value "英文菜单名（留空使用模板默认值）" "$menu_name_en" 0 menu_name_en
@@ -404,13 +415,17 @@ if [[ -z "$target" || -z "$module_id" || -z "$module_name" || -z "$go_module" ]]
 	fail_usage "--target、--id、--name 和 --go-module 为必填参数。"
 fi
 
-[[ -n "$description" ]] || description="$module_name module for hdyadmin"
+[[ -n "$description" ]] || description="$module_name module for $project_prefix"
 [[ -n "$menu_name_en" ]] || menu_name_en="$module_name Module"
 [[ -n "$menu_name_zh" ]] || menu_name_zh="${module_name}模块"
 
 if [[ ! "$module_id" =~ ^[a-z][a-z0-9-]*$ ]]; then
 	fail_usage "模块 ID 必须以小写字母开头，且只能包含小写字母、数字和连字符。"
 fi
+if [[ ! "$project_prefix" =~ ^[a-z][a-z0-9]*(-[a-z0-9]+)*$ ]]; then
+	fail_usage "项目前缀必须以小写字母开头，只能包含小写字母、数字和连字符，且连字符不能连续或位于末尾。"
+fi
+project_name="$project_prefix-$module_id"
 if [[ ! "$go_module" =~ ^[A-Za-z0-9._~-]+(/[A-Za-z0-9._~-]+)+$ ]]; then
 	fail_usage "Go module 路径格式无效：$go_module"
 fi
@@ -495,6 +510,7 @@ fi
 clone_args+=("$repo_url" "$staged_target")
 
 echo "📥 获取 HdyAdmin 模板：$repo_url"
+echo "🏷️  项目名称：$project_name"
 echo "📂 目标目录：$target_dir"
 git "${clone_args[@]}"
 
