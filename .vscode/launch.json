@@ -2,16 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug hdyadmin-template backend (standalone)",
+      "name": "Debug template backend (standalone)",
       "type": "go",
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/app/admin/cmd/server",
       "cwd": "${workspaceFolder}/app/admin",
-      "args": [
-        "-c",
-        "${workspaceFolder}/app/admin/configs"
-      ],
+      "args": ["-c", "${workspaceFolder}/app/admin/configs"],
       "env": {
         "MODULE_TLS_DISABLED": "1",
         "ADMIN_GRPC_ENDPOINT": "",
@@ -20,20 +17,17 @@
       }
     },
     {
-      "name": "Debug hdyadmin-template backend (connected)",
+      "name": "Debug template backend (connected)",
       "type": "go",
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/app/admin/cmd/server",
       "cwd": "${workspaceFolder}/app/admin",
-      "args": [
-        "-c",
-        "${workspaceFolder}/app/admin/configs"
-      ],
+      "args": ["-c", "${workspaceFolder}/app/admin/configs"],
       "envFile": "${workspaceFolder}/.env.local"
     },
     {
-      "name": "Debug hdyadmin-template frontend",
+      "name": "Debug template frontend",
       "type": "node-terminal",
       "request": "launch",
       "command": "corepack pnpm dev",
@@ -42,18 +36,18 @@
   ],
   "compounds": [
     {
-      "name": "Debug hdyadmin-template standalone (backend + frontend)",
+      "name": "Debug template standalone (backend + frontend)",
       "configurations": [
-        "Debug hdyadmin-template backend (standalone)",
-        "Debug hdyadmin-template frontend"
+        "Debug template backend (standalone)",
+        "Debug template frontend"
       ],
       "stopAll": true
     },
     {
-      "name": "Debug hdyadmin-template connected (backend + frontend)",
+      "name": "Debug template connected (backend + frontend)",
       "configurations": [
-        "Debug hdyadmin-template backend (connected)",
-        "Debug hdyadmin-template frontend"
+        "Debug template backend (connected)",
+        "Debug template frontend"
       ],
       "stopAll": true
     }
