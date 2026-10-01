@@ -19,7 +19,7 @@ plugins:
     out: ../app/admin/cmd/server/assets
     opt:
       - title=hdyadmin Template API
-      - description=Starter API for an hdyadmin business module
+      - description=Template API for hdyadmin
       - version=1.0.0
       - naming=json
       - depth=2

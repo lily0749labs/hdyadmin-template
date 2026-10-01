@@ -22,7 +22,7 @@ var (
 	moduleID    = "template"
 	moduleName  = "Template"
 	version     = "1.0.0"
-	description = "Starter module for hdyadmin"
+	description = "Template module for hdyadmin"
 )
 
 var globalRegistration *registration.RegistrationHelper

@@ -2,7 +2,7 @@
 module:
   id: template
   name: Template
-  description: Starter module for hdyadmin
+  description: Template module for hdyadmin
 
 menus:
   - id: template

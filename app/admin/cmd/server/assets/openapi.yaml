@@ -4,7 +4,7 @@
 openapi: 3.0.3
 info:
     title: hdyadmin Template API
-    description: Starter API for an hdyadmin business module
+    description: Template API for hdyadmin
     version: 1.0.0
 paths:
     /v1/examples/{name}:
