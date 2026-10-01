@@ -57,7 +57,6 @@ DOCKER_EXTRA_ARGS     ?= --provenance=false --sbom=false
 # Reghub_Pwd 可以通过环境变量或本地 .env 文件提供；未设置时会在终端安全询问。
 # CI 等非交互环境必须显式设置该变量。禁止把真实密码提交到仓库。
 # 登录时通过标准输入传递密码，避免密码直接出现在命令参数和终端历史中。
-Reghub_Url       ?= $(TARGET)
 Reghub_Login_Url ?= http://$(TARGET)
 Reghub_UserName  ?= admin
 Reghub_Pwd       ?=
