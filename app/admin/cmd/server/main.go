@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	// 这些模板值会由 scripts/install_admin.sh 统一替换。
+	// 创建业务模块时需要同步修改这些元数据。
 	moduleID    = "template"
 	moduleName  = "Template"
 	version     = "1.0.0"

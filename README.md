@@ -1,41 +1,15 @@
 # hdyadmin 模块模板
 
-这是从 `hdyadmin-notify` 提炼出的独立业务模块模板，用于快速创建可接入
-`hdyadmin-core` 的 Go/Kratos 后端和 Vue 远程模块。
+这是用于快速创建 hdyadmin 独立业务模块的模板，包含可接入 `hdyadmin-core` 的
+Go/Kratos 后端和 Vue 远程模块。
 
-模板只保留一条可验证的最小链路：
+模板提供一条可验证的最小链路：
 
 - Proto 同时生成 Go、TypeScript、OpenAPI 和 Descriptor。
 - 后端启动后向 `hdyadmin-core` 注册模块、接口、菜单和前端入口。
 - gRPC 支持通过 `hdyadmin-lcm` 引导 mTLS 证书。
 - 前端通过 Module Federation 被 `hdyadmin-frontend` 动态加载。
 - 示例接口可验证 Core 的动态 HTTP/gRPC 代理是否可用。
-
-## 快速创建新模块
-
-可以一条命令完成模板克隆、模块初始化、代码生成、Go 测试、服务端构建以及
-前端依赖安装和构建，不依赖 `gohdy`：
-
-```bash
-./scripts/install_admin.sh \
-  --target /path/to/examples/tangra-vip \
-  --id vip \
-  --name "VIP" \
-  --project-prefix tangra \
-  --go-module github.com/example/tangra-vip
-```
-
-`install_admin.sh` 已包含模板克隆和初始化逻辑，可以单独复制到任意目录执行，不依赖
-`gohdy` 或其他项目脚本。它会统一更新 Go module、注册信息、菜单、前端路由、开发端口、
-Docker 镜像名和调试配置。仅希望跳过前端依赖安装和构建时传入 `--skip-frontend`；调试
-脚本流程时可用 `--skip-check` 跳过最终检查。可通过 `--repo-url` 使用其他远程或本地模板
-仓库，通过 `--branch` 指定模板分支。`--project-prefix` 用于配置项目、可执行文件、镜像和
-模板品牌文本，默认值为 `hdyadmin`；例如传入 `--project-prefix tangra --id vip` 会生成
-`tangra-vip-admin`，并将页面文案、AppId、OpenAPI 及相关组件名称中的 `hdyadmin` 更新为
-`tangra`。
-
-模块 ID 只能包含小写字母、数字和连字符，一旦部署后不应再修改。初始化完成后建议提交
-一次基线版本，再开始添加业务代码。
 
 ## 环境准备
 
@@ -179,7 +153,6 @@ app/admin/internal/service/       业务服务
 app/admin/internal/server/        gRPC 与资源 HTTP 服务
 app/admin/internal/security/cert/ LCM/mTLS 证书引导
 frontend/admin/                   管理后台远程模块
-scripts/install_admin.sh          克隆模板并初始化的一键创建入口
 ```
 
 添加业务时通常按以下顺序进行：
