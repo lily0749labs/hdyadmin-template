@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
-# HdyAdmin 独立业务模块创建器。
+# 独立业务模块创建器。
 #
-# 脚本先把 hdyadmin-template 克隆到临时目录，移除模板的 Git 元数据，
+# 脚本先把默认模板仓库克隆到临时目录，移除模板的 Git 元数据，
 # 再替换模块信息、生成代码并执行校验。
 # 只有全部步骤成功后才会把项目移入目标目录；失败时保留临时目录便于排查。
 
 set -euo pipefail
 
 DEFAULT_REPO_URL="https://github.com/neo-fork-gotangra/hdyadmin-template.git"
+DEFAULT_PROJECT_PREFIX="hdyadmin"
 
 usage() {
-	cat <<'EOF'
+	sed "s/__DEFAULT_PROJECT_PREFIX__/$DEFAULT_PROJECT_PREFIX/g" <<'EOF'
 用法：
-  # 交互式创建（DevKit 菜单使用此方式）
-  bash devkit/install_hdyadmin.sh --interactive
+  # 交互式创建
+  ./scripts/new-module.sh --interactive
 
   # 参数式创建
-  bash devkit/install_hdyadmin.sh \
+  ./scripts/new-module.sh \
     --target <目标目录> \
     --id <模块ID> \
     --name <展示名称> \
@@ -38,10 +39,10 @@ usage() {
   --target DIR        新项目目录，必须不存在
   --id ID             模块 ID：小写字母开头，只允许小写字母、数字和连字符
   --name NAME         模块展示名称
-  --go-module PATH    Go module 路径，例如 github.com/example/hdyadmin-vip
+  --go-module PATH    Go module 路径，例如 github.com/example/acme-vip
 
 可选参数：
-  --project-prefix PREFIX  项目名前缀（默认 hdyadmin），用于项目、可执行文件和镜像命名
+  --project-prefix PREFIX  项目与品牌前缀（默认 __DEFAULT_PROJECT_PREFIX__），用于名称、镜像及模板品牌文本
   --description TEXT  模块描述（默认由模板根据展示名生成）
   --menu-name-en TEXT 英文菜单名（默认为“<展示名称> Module”）
   --menu-name-zh TEXT 中文菜单名（默认为“<展示名称>模块”）
@@ -56,12 +57,12 @@ usage() {
   -h, --help          显示帮助
 
 示例：
-  bash devkit/install_hdyadmin.sh \
-    --target ../hdyadmin-vip \
+  ./scripts/new-module.sh \
+    --target ../acme-vip \
     --id vip \
     --name VIP \
-    --project-prefix hdyadmin \
-    --go-module github.com/example/hdyadmin-vip
+    --project-prefix acme \
+    --go-module github.com/example/acme-vip
 
 说明：
   默认会执行模板初始化、Proto lint、Go 测试、服务端构建以及前端构建。
@@ -191,6 +192,7 @@ initialize_module() {
 	local old_id="tem""plate"
 	local old_name="Tem""plate"
 	local old_repo="hdyadmin-""template"
+	local old_brand="hdy""admin"
 	local module_env_prefix current_go_module file tool
 	local -a metadata_files generation_tools missing_tools
 
@@ -260,8 +262,14 @@ initialize_module() {
 		replace_in_file "TEMPLATE" "$module_env_prefix" app/admin/internal/security/cert/cert_manager.go
 		replace_in_file "Starter module for hdyadmin" "$description" app/admin/cmd/server/main.go
 		replace_in_file "Starter module for hdyadmin" "$description" app/admin/cmd/server/assets/menus.yaml
+		replace_in_file "Starter API for an hdyadmin business module" "$module_name API for $project_prefix" api/buf.openapi.gen.yaml
+		replace_in_file "Starter API for an hdyadmin business module" "$module_name API for $project_prefix" app/admin/cmd/server/assets/openapi.yaml
 		replace_in_file "Example Module" "$menu_name_en" frontend/admin/src/locales/en-US.json
 		replace_in_file "示例模块" "$menu_name_zh" frontend/admin/src/locales/zh-CN.json
+
+		# 项目前缀同时作为品牌标识，更新页面文案、AppId、OpenAPI 和依赖组件名称等文本。
+		replace_project_text "$old_brand" "$project_prefix"
+		replace_in_file 'DEFAULT_PROJECT_PREFIX="hdyadmin"' "DEFAULT_PROJECT_PREFIX=\"$project_prefix\"" scripts/new-module.sh
 
 		go mod edit -module "$go_module"
 
@@ -285,7 +293,7 @@ target=""
 module_id=""
 module_name=""
 go_module=""
-project_prefix="hdyadmin"
+project_prefix="$DEFAULT_PROJECT_PREFIX"
 project_name=""
 description=""
 menu_name_en=""
@@ -389,7 +397,7 @@ while (($# > 0)); do
 done
 
 if [[ "$interactive" == "1" ]]; then
-	echo "HdyAdmin 独立业务模块交互式创建"
+	echo "独立业务模块交互式创建"
 	echo "按回车使用方括号中的默认值。"
 	echo
 	prompt_value "模块 ID" "$module_id" 1 module_id
@@ -478,7 +486,7 @@ done
 if ((${#missing_commands[@]} > 0)); then
 	echo "❌ 缺少所需命令：${missing_commands[*]}" >&2
 	if [[ "$skip_check" == "0" ]]; then
-		echo "请先按 hdyadmin-template 的 README 安装生成工具和前端环境。" >&2
+		echo "请先按模板 README 安装生成工具和前端环境。" >&2
 		echo "如果只需先生成项目骨架，可使用 --skip-check，之后在项目中执行 make tools、make gen 和 make check。" >&2
 	fi
 	exit 1
@@ -509,7 +517,7 @@ if [[ -n "$branch" ]]; then
 fi
 clone_args+=("$repo_url" "$staged_target")
 
-echo "📥 获取 HdyAdmin 模板：$repo_url"
+echo "📥 获取业务模块模板：$repo_url"
 echo "🏷️  项目名称：$project_name"
 echo "📂 目标目录：$target_dir"
 git "${clone_args[@]}"
@@ -564,7 +572,7 @@ staging_root=""
 trap - EXIT
 
 echo
-echo "✅ HdyAdmin 模块已创建：$target_dir"
+echo "✅ 业务模块已创建：$target_dir"
 echo "下一步："
 echo "  cd '$target_dir'"
 echo "  cp .env.example .env.local"

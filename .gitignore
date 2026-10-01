@@ -38,3 +38,5 @@ go.work
 tmp/
 *.log
 __debug_bin*
+
+vip/
