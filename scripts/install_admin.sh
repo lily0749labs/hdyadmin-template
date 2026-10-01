@@ -14,10 +14,10 @@ usage() {
 	sed "s/__DEFAULT_PROJECT_PREFIX__/$DEFAULT_PROJECT_PREFIX/g" <<'EOF'
 用法：
   # 交互式创建
-  ./scripts/new-module.sh --interactive
+  ./scripts/install_admin.sh --interactive
 
   # 参数式创建
-  ./scripts/new-module.sh \
+  ./scripts/install_admin.sh \
     --target <目标目录> \
     --id <模块ID> \
     --name <展示名称> \
@@ -57,7 +57,7 @@ usage() {
   -h, --help          显示帮助
 
 示例：
-  ./scripts/new-module.sh \
+  ./scripts/install_admin.sh \
     --target ../acme-vip \
     --id vip \
     --name VIP \
@@ -201,7 +201,7 @@ replace_project_text() {
 	while IFS= read -r -d '' file; do
 		relative_file="${file#./}"
 		case "$relative_file" in
-		scripts/new-module.sh | scripts/init-module.sh | pb/*.pb.go | api/pb/*.pb.go) continue ;;
+		scripts/install_admin.sh | pb/*.pb.go | api/pb/*.pb.go) continue ;;
 		esac
 		if LC_ALL=C grep -IFq -- "$old_value" "$file"; then
 			replace_in_file "$old_value" "$new_value" "$file"
@@ -293,7 +293,7 @@ initialize_module() {
 
 		# 项目前缀同时作为品牌标识，更新页面文案、AppId、OpenAPI 和依赖组件名称等文本。
 		replace_project_text "$old_brand" "$project_prefix"
-		replace_in_file 'DEFAULT_PROJECT_PREFIX="hdyadmin"' "DEFAULT_PROJECT_PREFIX=\"$project_prefix\"" scripts/new-module.sh
+		replace_in_file 'DEFAULT_PROJECT_PREFIX="hdyadmin"' "DEFAULT_PROJECT_PREFIX=\"$project_prefix\"" scripts/install_admin.sh
 
 		# 最后写入用户提供的 Go module，避免其中的品牌字符串被前面的替换规则误改。
 		# 只更新 Go 源码和 Buf 配置中的 module 前缀，避免短 module 名误伤普通路径。
@@ -594,14 +594,8 @@ find "$template_git_dir" -depth -delete
 
 # 无论模板远程仓库是否已经更新，都让新项目保留当前版本的一键创建入口。
 mkdir -p "$staged_target/scripts"
-cp "$script_source" "$staged_target/scripts/new-module.sh"
-chmod +x "$staged_target/scripts/new-module.sh"
-
-# 兼容仍带旧初始化脚本的模板分支；初始化逻辑现已合并到本脚本。
-legacy_init_script="$staged_target/scripts/init-module.sh"
-if [[ -e "$legacy_init_script" || -L "$legacy_init_script" ]]; then
-	find "$legacy_init_script" -maxdepth 0 -delete
-fi
+cp "$script_source" "$staged_target/scripts/install_admin.sh"
+chmod +x "$staged_target/scripts/install_admin.sh"
 
 echo "⚙️  初始化模块：$module_id"
 initialize_module "$staged_target"

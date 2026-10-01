@@ -17,7 +17,7 @@
 前端依赖安装和构建，不依赖 `gohdy`：
 
 ```bash
-./scripts/new-module.sh \
+./scripts/install_admin.sh \
   --target /path/to/examples/tangra-vip \
   --id vip \
   --name "VIP" \
@@ -25,7 +25,7 @@
   --go-module github.com/example/tangra-vip
 ```
 
-`new-module.sh` 已包含模板克隆和初始化逻辑，可以单独复制到任意目录执行，不依赖
+`install_admin.sh` 已包含模板克隆和初始化逻辑，可以单独复制到任意目录执行，不依赖
 `gohdy` 或其他项目脚本。它会统一更新 Go module、注册信息、菜单、前端路由、开发端口、
 Docker 镜像名和调试配置。仅希望跳过前端依赖安装和构建时传入 `--skip-frontend`；调试
 脚本流程时可用 `--skip-check` 跳过最终检查。可通过 `--repo-url` 使用其他远程或本地模板
@@ -129,7 +129,7 @@ app/admin/internal/service/       业务服务
 app/admin/internal/server/        gRPC 与资源 HTTP 服务
 app/admin/internal/security/cert/ LCM/mTLS 证书引导
 frontend/admin/                   管理后台远程模块
-scripts/new-module.sh             克隆模板并初始化的一键创建入口
+scripts/install_admin.sh          克隆模板并初始化的一键创建入口
 ```
 
 添加业务时通常按以下顺序进行：
