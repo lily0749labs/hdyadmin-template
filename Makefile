@@ -27,7 +27,7 @@ TYPESCRIPT_HTTP_VERSION ?= latest
 
 .PHONY: help tools gen api api-typescript ts openapi descriptor wire api-lint api-format \
 	frontend-install frontend-build embed-frontend build build-server run run-server \
-	run-standalone run-frontend test test-cover check clean clean-all
+	run-standalone run-frontend run-frontend-connected test test-cover check clean clean-all
 
 .NOTPARALLEL: gen build
 
@@ -92,7 +92,8 @@ build-server:
 run: run-standalone
 
 run-standalone:
-	@MODULE_TLS_DISABLED=1 \
+	@MODULE_STANDALONE=1 \
+		MODULE_TLS_DISABLED=1 \
 		ADMIN_GRPC_ENDPOINT= \
 		go run ./app/admin/cmd/server -c ./app/admin/configs
 
@@ -102,6 +103,9 @@ run-server:
 
 run-frontend:
 	@cd frontend/admin && corepack pnpm dev
+
+run-frontend-connected:
+	@cd frontend/admin && corepack pnpm dev:connected
 
 test:
 	@go test ./...
@@ -134,7 +138,8 @@ help:
 	@echo "  make api-lint          检查 Proto 协议及格式"
 	@echo "  make run               独立启动后端，不连接 LCM/Core"
 	@echo "  make run-server        联调启动后端，连接 LCM/Core"
-	@echo "  make run-frontend      启动远程前端"
+	@echo "  make run-frontend      启动可独立访问的前端调试页"
+	@echo "  make run-frontend-connected  启动连接宿主 Shell 的远程前端"
 	@echo "  make check             运行协议、Go 和前端检查"
 	@echo "  make build             构建完整模块"
 	@echo "  make clean             清理构建产物，保留前端依赖"

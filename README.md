@@ -46,24 +46,26 @@ cp .env.example .env.local
 - `LCM_CA_FINGERPRINT`
 - `ADMIN_GRPC_ENDPOINT`
 
-不连接 LCM 和 Core 时，以 standalone 模式启动后端：
+不连接 LCM、Core 和宿主 Shell 时，可以启动完整的 standalone 调试链路：
 
 ```bash
 make run
+make run-frontend
 ```
 
-standalone 模式仅用于本地开发和冒烟测试，会关闭模块 mTLS，并跳过向 Core 注册。
+浏览器访问 `http://localhost:3011`。此模式关闭模块 mTLS、跳过 Core 注册，并由 Vite 将
+`/api` 请求代理到模块的 `10401` HTTP 端口，仅用于本地开发和冒烟测试。
 
 联调完整环境时，先确保 `.env.local` 中的 LCM/Core 地址和凭据正确，再分别启动后端和远程前端：
 
 ```bash
 make run-server
-make run-frontend
+make run-frontend-connected
 ```
 
-也可以在 VS Code 中直接运行
-`Debug hdyadmin-template backend (standalone)`。联调完整环境时，先创建 `.env.local`，再运行
-`Debug hdyadmin-template connected (backend + frontend)`。
+VS Code 的 `Debug template standalone (backend + frontend)` 会启动前后端、等待 Vite 就绪，
+然后打开可断点调试的浏览器。Connected 配置会打开宿主页面，并要求 LCM、Core 和宿主 Shell
+已经运行。
 
 默认地址：
 
@@ -93,6 +95,8 @@ make api-lint          检查 Proto
 make test              运行 Go 测试
 make run               standalone 模式启动后端
 make run-server        连接 LCM/Core 启动后端
+make run-frontend      启动 standalone 前端调试页
+make run-frontend-connected  启动连接宿主 Shell 的远程前端
 make frontend-build    构建远程前端
 make build-server      构建 bin/hdyadmin-template-admin
 make build             构建前后端和最终服务端

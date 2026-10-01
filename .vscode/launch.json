@@ -10,6 +10,7 @@
       "cwd": "${workspaceFolder}/app/admin",
       "args": ["-c", "${workspaceFolder}/app/admin/configs"],
       "env": {
+        "MODULE_STANDALONE": "1",
         "MODULE_TLS_DISABLED": "1",
         "ADMIN_GRPC_ENDPOINT": "",
         "MODULE_HTTP_ADDR": "127.0.0.1:10401",
@@ -27,11 +28,36 @@
       "envFile": "${workspaceFolder}/.env.local"
     },
     {
-      "name": "Debug template frontend",
-      "type": "node-terminal",
+      "name": "Debug template frontend (standalone)",
+      "type": "pwa-node",
       "request": "launch",
-      "command": "corepack pnpm dev",
-      "cwd": "${workspaceFolder}/frontend/admin"
+      "cwd": "${workspaceFolder}/frontend/admin",
+      "runtimeExecutable": "node",
+      "program": "${workspaceFolder}/frontend/admin/node_modules/vite/bin/vite.js",
+      "args": ["--mode", "standalone", "--port", "3011", "--clearScreen", "false"],
+      "console": "internalConsole",
+      "preLaunchTask": "Template: install frontend",
+      "serverReadyAction": {
+        "pattern": "Local:\\s+(http://localhost:3011/)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    },
+    {
+      "name": "Debug template frontend (connected)",
+      "type": "pwa-node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend/admin",
+      "runtimeExecutable": "node",
+      "program": "${workspaceFolder}/frontend/admin/node_modules/vite/bin/vite.js",
+      "args": ["--mode", "connected", "--port", "3011", "--clearScreen", "false"],
+      "console": "internalConsole",
+      "preLaunchTask": "Template: install frontend",
+      "serverReadyAction": {
+        "pattern": "Local:\\s+http://localhost:3011/",
+        "uriFormat": "http://localhost:5666/template/example",
+        "action": "debugWithChrome"
+      }
     }
   ],
   "compounds": [
@@ -39,7 +65,7 @@
       "name": "Debug template standalone (backend + frontend)",
       "configurations": [
         "Debug template backend (standalone)",
-        "Debug template frontend"
+        "Debug template frontend (standalone)"
       ],
       "stopAll": true
     },
@@ -47,7 +73,7 @@
       "name": "Debug template connected (backend + frontend)",
       "configurations": [
         "Debug template backend (connected)",
-        "Debug template frontend"
+        "Debug template frontend (connected)"
       ],
       "stopAll": true
     }

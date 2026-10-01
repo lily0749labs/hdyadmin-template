@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { Page } from 'shell/vben/common-ui';
-
 import { exampleService } from '../../api/client';
 
+const standalone = import.meta.env.MODE === 'standalone';
 const name = ref('Codex');
 const message = ref('');
 const error = ref('');
@@ -26,9 +25,11 @@ async function checkConnection() {
 </script>
 
 <template>
-  <Page title="hdyadmin 模块连通性检查">
+  <main class="module-page">
+    <h1>hdyadmin 模块连通性检查</h1>
     <section class="example-card">
-      <p>调用示例接口，验证宿主前端、Core 动态代理和模块 gRPC 服务。</p>
+      <p v-if="standalone">直接调用模块 HTTP 接口，验证 standalone 前后端链路。</p>
+      <p v-else>调用示例接口，验证宿主前端、Core 动态代理和模块 gRPC 服务。</p>
       <div class="example-form">
         <input v-model="name" aria-label="Name" placeholder="请输入名称" />
         <button type="button" :disabled="loading || !name" @click="checkConnection">
@@ -38,10 +39,19 @@ async function checkConnection() {
       <p v-if="message" class="success">{{ message }}</p>
       <p v-if="error" class="error">{{ error }}</p>
     </section>
-  </Page>
+  </main>
 </template>
 
 <style scoped>
+.module-page {
+  padding: 24px;
+}
+
+.module-page h1 {
+  margin: 0 0 20px;
+  font-size: 24px;
+}
+
 .example-card {
   max-width: 720px;
   padding: 24px;

@@ -27,7 +27,7 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	httpServer := server.NewHTTPServer(context)
+	httpServer := server.NewHTTPServer(context, exampleService)
 	app := newApp(context, grpcServer, httpServer)
 	return app, func() {
 	}, nil

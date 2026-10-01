@@ -1,15 +1,23 @@
-import { useAccessStore } from 'shell/vben/stores';
-
 import {
   createExampleServiceClient,
   type ClientTransport,
 } from '../generated/api/domain/example/v1';
 
-const MODULE_BASE_URL = '/admin/v1/modules/template';
+const standalone = import.meta.env.MODE === 'standalone';
+const MODULE_BASE_URL = standalone ? '/api' : '/admin/v1/modules/template';
+
+async function getAccessToken(): Promise<string | undefined> {
+  if (standalone) {
+    return undefined;
+  }
+
+  const { useAccessStore } = await import('shell/vben/stores');
+  const accessStore = useAccessStore();
+  return (accessStore as { accessToken?: string }).accessToken;
+}
 
 async function request(path: string, method: string, body: string | null): Promise<unknown> {
-  const accessStore = useAccessStore();
-  const token = (accessStore as { accessToken?: string }).accessToken;
+  const token = await getAccessToken();
   const response = await fetch(`${MODULE_BASE_URL}/${path}`, {
     method,
     headers: {
@@ -35,14 +43,12 @@ async function request(path: string, method: string, body: string | null): Promi
 }
 
 const transport: ClientTransport = {
-  unary(path, method, body) {
-    return request(path, method, body);
+  unary: (path, method, body) => request(path, method, body),
+  serverStream: () => {
+    throw new Error('Server streaming is not supported by this module client.');
   },
-  serverStream() {
-    throw new Error('Template module does not expose server streams');
-  },
-  duplexStream() {
-    throw new Error('Template module does not expose duplex streams');
+  duplexStream: () => {
+    throw new Error('Duplex streaming is not supported by this module client.');
   },
 };
 

@@ -2,17 +2,38 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Template: run server",
+      "label": "Template: install frontend",
+      "type": "shell",
+      "command": "make",
+      "args": ["frontend-install"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Template: run server (standalone)",
+      "type": "shell",
+      "command": "make",
+      "args": ["run"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Template: run server (connected)",
       "type": "shell",
       "command": "make",
       "args": ["run-server"],
       "problemMatcher": []
     },
     {
-      "label": "Template: run frontend",
+      "label": "Template: run frontend (standalone)",
       "type": "shell",
       "command": "make",
       "args": ["run-frontend"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Template: run frontend (connected)",
+      "type": "shell",
+      "command": "make",
+      "args": ["run-frontend-connected"],
       "problemMatcher": []
     },
     {

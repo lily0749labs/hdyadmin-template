@@ -8,12 +8,17 @@ import (
 	kratosHTTP "github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
+	domainpb "github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain"
 	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/cmd/server/assets"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/service"
 )
 
 // NewHTTPServer serves health checks, registration assets and the embedded remote frontend.
-// Business HTTP requests are dynamically proxied by hdyadmin-core to this module's gRPC API.
-func NewHTTPServer(ctx *bootstrap.Context) *kratosHTTP.Server {
+// In standalone mode it also exposes business HTTP routes that Core normally proxies to gRPC.
+func NewHTTPServer(
+	ctx *bootstrap.Context,
+	exampleService *service.ExampleService,
+) *kratosHTTP.Server {
 	logger := ctx.NewLoggerHelper("template/http")
 	addr := os.Getenv("MODULE_HTTP_ADDR")
 	if addr == "" {
@@ -22,6 +27,10 @@ func NewHTTPServer(ctx *bootstrap.Context) *kratosHTTP.Server {
 
 	server := kratosHTTP.NewServer(kratosHTTP.Address(addr))
 	route := server.Route("/")
+	if os.Getenv("MODULE_STANDALONE") == "1" {
+		domainpb.RegisterExampleServiceHTTPServer(server, exampleService)
+		logger.Warn("standalone HTTP API enabled without Core proxy")
+	}
 
 	route.GET("/health", func(ctx kratosHTTP.Context) error {
 		return ctx.JSON(http.StatusOK, map[string]string{"status": "ok"})
