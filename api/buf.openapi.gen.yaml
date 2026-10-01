@@ -16,7 +16,7 @@ managed:
 plugins:
   - local: protoc-gen-openapi
     strategy: all
-    out: ../app/cmd/server/assets
+    out: ../app/admin/cmd/server/assets
     opt:
       - title=hdyadmin Template API
       - description=Starter API for an hdyadmin business module

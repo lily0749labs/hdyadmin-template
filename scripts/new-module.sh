@@ -225,12 +225,12 @@ initialize_module() {
 
 		metadata_files=(
 			README.md
-			app/cmd/server/main.go
-			app/cmd/server/assets/menus.yaml
-			app/cmd/server/assets/openapi.yaml
-			app/internal/security/cert/cert_manager.go
-			app/internal/server/grpc.go
-			app/internal/server/http.go
+			app/admin/cmd/server/main.go
+			app/admin/cmd/server/assets/menus.yaml
+			app/admin/cmd/server/assets/openapi.yaml
+			app/admin/internal/security/cert/cert_manager.go
+			app/admin/internal/server/grpc.go
+			app/admin/internal/server/http.go
 			api/buf.openapi.gen.yaml
 			frontend/index.html
 			frontend/package.json
@@ -254,9 +254,9 @@ initialize_module() {
 			replace_in_file "$old_name" "$module_name" "$file"
 		done
 
-		replace_in_file "TEMPLATE" "$module_env_prefix" app/internal/security/cert/cert_manager.go
-		replace_in_file "Starter module for hdyadmin" "$description" app/cmd/server/main.go
-		replace_in_file "Starter module for hdyadmin" "$description" app/cmd/server/assets/menus.yaml
+		replace_in_file "TEMPLATE" "$module_env_prefix" app/admin/internal/security/cert/cert_manager.go
+		replace_in_file "Starter module for hdyadmin" "$description" app/admin/cmd/server/main.go
+		replace_in_file "Starter module for hdyadmin" "$description" app/admin/cmd/server/assets/menus.yaml
 		replace_in_file "Example Module" "$menu_name_en" frontend/src/locales/en-US.json
 		replace_in_file "示例模块" "$menu_name_zh" frontend/src/locales/zh-CN.json
 

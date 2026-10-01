@@ -56,10 +56,10 @@ openapi:
 	@cd api && buf generate --template buf.openapi.gen.yaml
 
 descriptor:
-	@cd api && buf build -o ../app/cmd/server/assets/descriptor.bin
+	@cd api && buf build -o ../app/admin/cmd/server/assets/descriptor.bin
 
 wire:
-	@cd app && go run -mod=mod github.com/google/wire/cmd/wire ./cmd/server
+	@cd app/admin && go run -mod=mod github.com/google/wire/cmd/wire ./cmd/server
 
 api-lint:
 	@cd api && buf lint
@@ -75,20 +75,20 @@ frontend-build: api-typescript
 	@cd frontend && corepack pnpm build
 
 embed-frontend: frontend-build
-	@find app/cmd/server/assets/frontend-dist -mindepth 1 ! -name .gitkeep -delete
-	@cp -R frontend/dist/. app/cmd/server/assets/frontend-dist/
+	@find app/admin/cmd/server/assets/frontend-dist -mindepth 1 ! -name .gitkeep -delete
+	@cp -R frontend/dist/. app/admin/cmd/server/assets/frontend-dist/
 
 build: gen embed-frontend build-server
 
 build-server:
 	@mkdir -p ./bin
 	@echo "构建 hdyadmin-template 服务端..."
-	@go build $(GOFLAGS) -ldflags "$(LDFLAGS)" -o ./bin/module-server ./app/cmd/server
+	@go build $(GOFLAGS) -ldflags "$(LDFLAGS)" -o ./bin/module-server ./app/admin/cmd/server
 
 run: run-server
 
 run-server:
-	@go run ./app/cmd/server -c ./app/configs
+	@go run ./app/admin/cmd/server -c ./app/admin/configs
 
 run-frontend:
 	@cd frontend && corepack pnpm dev
@@ -106,7 +106,7 @@ check: api-lint test frontend-build
 clean:
 	@find bin -mindepth 1 -delete 2>/dev/null || true
 	@find frontend/dist -mindepth 1 -delete 2>/dev/null || true
-	@find app/cmd/server/assets/frontend-dist -mindepth 1 ! -name .gitkeep -delete
+	@find app/admin/cmd/server/assets/frontend-dist -mindepth 1 ! -name .gitkeep -delete
 	@rm -f coverage.out coverage.html
 	@echo "构建产物已清理。"
 

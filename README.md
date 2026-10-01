@@ -119,10 +119,10 @@ make docker            构建容器镜像
 ```text
 api/protos/                       Proto 唯一协议源
 api/pb/                           生成的 Go API
-app/cmd/server/                   服务入口和注册资产
-app/internal/service/             业务服务
-app/internal/server/              gRPC 与资源 HTTP 服务
-app/internal/security/cert/       LCM/mTLS 证书引导
+app/admin/cmd/server/             服务入口和注册资产
+app/admin/internal/service/       业务服务
+app/admin/internal/server/        gRPC 与资源 HTTP 服务
+app/admin/internal/security/cert/ LCM/mTLS 证书引导
 frontend/                         管理后台远程模块
 scripts/new-module.sh             克隆模板并初始化的一键创建入口
 ```

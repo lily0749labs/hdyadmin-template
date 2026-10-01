@@ -12,9 +12,9 @@ import (
 	"github.com/go-tangra/go-tangra-common/middleware/mtls"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/internal/security/cert"
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/internal/service"
 	domainpb "github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/security/cert"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/service"
 )
 
 func NewGRPCServer(

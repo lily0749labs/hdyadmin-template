@@ -14,5 +14,5 @@ frontend/dist
 tmp
 **/.DS_Store
 
-app/cmd/server/assets/frontend-dist/*
-!app/cmd/server/assets/frontend-dist/.gitkeep
+app/admin/cmd/server/assets/frontend-dist/*
+!app/admin/cmd/server/assets/frontend-dist/.gitkeep

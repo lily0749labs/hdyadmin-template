@@ -8,8 +8,8 @@ import (
 	"github.com/google/wire"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
-	serverProviders "github.com/neo-fork-gotangra/hdyadmin-template/app/internal/server/providers"
-	serviceProviders "github.com/neo-fork-gotangra/hdyadmin-template/app/internal/service/providers"
+	serverProviders "github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/server/providers"
+	serviceProviders "github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/service/providers"
 )
 
 // initApp 描述最小依赖图；新增 Repo、Service 或 Server 后更新对应 ProviderSet。

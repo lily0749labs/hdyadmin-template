@@ -14,7 +14,7 @@ import (
 
 	"github.com/go-tangra/go-tangra-common/registration"
 	commonService "github.com/go-tangra/go-tangra-common/service"
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/cmd/server/assets"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/cmd/server/assets"
 )
 
 var (

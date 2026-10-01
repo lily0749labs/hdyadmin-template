@@ -6,8 +6,8 @@ package providers
 import (
 	"github.com/google/wire"
 
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/internal/security/cert"
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/internal/server"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/security/cert"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/server"
 )
 
 var ProviderSet = wire.NewSet(

@@ -8,9 +8,9 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/internal/security/cert"
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/internal/server"
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/internal/service"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/security/cert"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/server"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/service"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 )
 

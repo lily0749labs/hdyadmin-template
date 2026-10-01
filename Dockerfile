@@ -50,12 +50,12 @@ WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-COPY --from=frontend-builder /frontend/dist app/cmd/server/assets/frontend-dist/
+COPY --from=frontend-builder /frontend/dist app/admin/cmd/server/assets/frontend-dist/
 
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
     go build -ldflags "-X main.version=${APP_VERSION} -s -w" \
     -o /src/bin/module-server \
-    ./app/cmd/server
+    ./app/admin/cmd/server
 
 ##################################
 # Stage 3: Runtime image
@@ -71,7 +71,7 @@ ENV TZ=UTC
 WORKDIR /app
 
 COPY --from=builder /src/bin/module-server /app/bin/module-server
-COPY --from=builder /src/app/configs/ /app/configs/
+COPY --from=builder /src/app/admin/configs/ /app/configs/
 
 RUN addgroup -g 1000 module && \
     adduser -D -u 1000 -G module module && \

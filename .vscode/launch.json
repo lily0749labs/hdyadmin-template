@@ -6,11 +6,11 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${workspaceFolder}/app/cmd/server",
-      "cwd": "${workspaceFolder}/app",
+      "program": "${workspaceFolder}/app/admin/cmd/server",
+      "cwd": "${workspaceFolder}/app/admin",
       "args": [
         "-c",
-        "${workspaceFolder}/app/configs"
+        "${workspaceFolder}/app/admin/configs"
       ],
       "env": {
         "MODULE_TLS_DISABLED": "1",
@@ -24,11 +24,11 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${workspaceFolder}/app/cmd/server",
-      "cwd": "${workspaceFolder}/app",
+      "program": "${workspaceFolder}/app/admin/cmd/server",
+      "cwd": "${workspaceFolder}/app/admin",
       "args": [
         "-c",
-        "${workspaceFolder}/app/configs"
+        "${workspaceFolder}/app/admin/configs"
       ],
       "envFile": "${workspaceFolder}/.env.local"
     },

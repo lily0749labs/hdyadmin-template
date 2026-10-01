@@ -24,8 +24,8 @@ frontend/.__mf__temp/
 .pnpm-store/
 
 # Embedded frontend build output
-app/cmd/server/assets/frontend-dist/*
-!app/cmd/server/assets/frontend-dist/.gitkeep
+app/admin/cmd/server/assets/frontend-dist/*
+!app/admin/cmd/server/assets/frontend-dist/.gitkeep
 
 # Editors and OS
 .idea/

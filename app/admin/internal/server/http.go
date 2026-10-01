@@ -8,7 +8,7 @@ import (
 	kratosHTTP "github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/cmd/server/assets"
+	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/cmd/server/assets"
 )
 
 // NewHTTPServer serves health checks, registration assets and the embedded remote frontend.
