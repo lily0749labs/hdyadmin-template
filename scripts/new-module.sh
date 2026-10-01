@@ -3,7 +3,7 @@
 #
 # 脚本先把默认模板仓库克隆到临时目录，移除模板的 Git 元数据，
 # 再替换模块信息、生成代码并执行校验。
-# 只有全部步骤成功后才会把项目移入目标目录；失败时保留临时目录便于排查。
+# 只有全部步骤成功后才会把项目写入目标目录；失败时保留临时目录便于排查。
 
 set -euo pipefail
 
@@ -36,7 +36,7 @@ usage() {
     [--interactive]
 
 必填参数：
-  --target DIR        新项目目录；已存在时会询问是否删除并重新创建
+  --target DIR        新项目目录；已存在时会询问是否覆盖同名内容
   --id ID             模块 ID：小写字母开头，只允许小写字母、数字和连字符
   --name NAME         模块展示名称
   --go-module PATH    Go module 路径，例如 github.com/example/acme-vip
@@ -344,6 +344,7 @@ skip_frontend="0"
 skip_check="0"
 interactive="0"
 overwrite_target="0"
+confirmed="0"
 
 while (($# > 0)); do
 	case "$1" in
@@ -497,16 +498,31 @@ if ((10#$grpc_port == 10#$http_port || 10#$grpc_port == 10#$frontend_port || 10#
 fi
 
 if [[ -e "$target" || -L "$target" ]]; then
-	echo "⚠️ 目标目录已经存在：$target" >&2
-	prompt_yes_no "继续将删除并重新创建该目录，是否继续" "0" overwrite_target
-	if [[ "$overwrite_target" != "1" ]]; then
+	if [[ ! -d "$target" || -L "$target" ]]; then
+		echo "❌ 目标路径已经存在，但不是可安全覆盖的普通目录：$target" >&2
+		exit 1
+	fi
+
+	overwrite_target="1"
+	echo "⚠️ 目标目录已经存在：$target"
+	echo "覆盖操作会替换同名内容，并保留目标目录中其他文件。"
+	prompt_yes_no "是否继续覆盖" "0" confirmed
+	if [[ "$confirmed" != "1" ]]; then
 		echo "已取消，现有目录未作修改：$target"
 		exit 0
 	fi
+	confirmed="0"
 	echo
 fi
 
 print_effective_parameters
+
+prompt_yes_no "请确认以上参数是否正确，是否继续" "0" confirmed
+if [[ "$confirmed" != "1" ]]; then
+	echo "已取消，未创建或修改目标目录：$target"
+	exit 0
+fi
+echo
 
 required_commands=(git go make perl)
 if [[ "$skip_check" == "0" ]]; then
@@ -611,26 +627,14 @@ if [[ -e "$target_dir" || -L "$target_dir" ]]; then
 		echo "❌ 目标目录在创建过程中已出现，已停止以避免覆盖：$target_dir" >&2
 		exit 1
 	fi
-
-	backup_target="${target_dir}.new-module-backup.$$"
-	if [[ -e "$backup_target" || -L "$backup_target" ]]; then
-		echo "❌ 备份路径已经存在，无法安全替换目标目录：$backup_target" >&2
+	if [[ ! -d "$target_dir" || -L "$target_dir" ]]; then
+		echo "❌ 目标路径不再是可安全覆盖的普通目录：$target_dir" >&2
 		exit 1
 	fi
 
-	echo "♻️  替换已有目标目录：$target_dir"
-	mv "$target_dir" "$backup_target"
-	if mv "$staged_target" "$target_dir"; then
-		find "$backup_target" -depth -delete
-	else
-		move_status=$?
-		echo "❌ 安装新项目失败，正在恢复原目录：$target_dir" >&2
-		if [[ ! -e "$target_dir" && ! -L "$target_dir" ]]; then
-			mv "$backup_target" "$target_dir"
-		fi
-		exit "$move_status"
-	fi
-
+	echo "♻️  覆盖已有目标目录中的同名内容：$target_dir"
+	cp -R "$staged_target/." "$target_dir/"
+	find "$staged_target" -depth -delete
 	rmdir "$staging_root"
 	staging_root=""
 	trap - EXIT
