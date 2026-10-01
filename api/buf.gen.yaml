@@ -11,33 +11,33 @@ managed:
   override:
     - file_option: go_package
       path: domain
-      value: github.com/neo-fork-gotangra/hdyadmin-template/pb/domain;domain_pb
+      value: github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain;domain_pb
 
 plugins:
   - local: protoc-gen-go
-    out: ../pb
+    out: pb
     opt:
       - paths=import
-      - module=github.com/neo-fork-gotangra/hdyadmin-template/pb
+      - module=github.com/neo-fork-gotangra/hdyadmin-template/api/pb
 
   - local: protoc-gen-go-grpc
-    out: ../pb
+    out: pb
     opt:
       - paths=import
-      - module=github.com/neo-fork-gotangra/hdyadmin-template/pb
+      - module=github.com/neo-fork-gotangra/hdyadmin-template/api/pb
 
   - local: protoc-gen-go-http
-    out: ../pb
+    out: pb
     opt:
       - paths=import
-      - module=github.com/neo-fork-gotangra/hdyadmin-template/pb
+      - module=github.com/neo-fork-gotangra/hdyadmin-template/api/pb
 
   - local: [go, run, ./tools/protoc-gen-redact]
-    out: ../pb
+    out: pb
     strategy: all
     opt:
       - paths=import
-      - module=github.com/neo-fork-gotangra/hdyadmin-template/pb
+      - module=github.com/neo-fork-gotangra/hdyadmin-template/api/pb
       - lang=go
 
 inputs:

@@ -110,7 +110,7 @@ make build             构建前后端和最终服务端
 make docker            构建容器镜像
 ```
 
-`pb/`、`frontend/src/generated/api/`、`openapi.yaml` 和 `descriptor.bin` 会提交到版本库，
+`api/pb/`、`frontend/src/generated/api/`、`openapi.yaml` 和 `descriptor.bin` 会提交到版本库，
 保证新克隆的项目可以直接执行 `go mod tidy` 和 `go test ./...`。修改 Proto 后必须重新执行
 `make gen`。
 
@@ -118,7 +118,7 @@ make docker            构建容器镜像
 
 ```text
 api/protos/                       Proto 唯一协议源
-pb/                               生成的 Go API
+api/pb/                           生成的 Go API
 app/cmd/server/                   服务入口和注册资产
 app/internal/service/             业务服务
 app/internal/server/              gRPC 与资源 HTTP 服务

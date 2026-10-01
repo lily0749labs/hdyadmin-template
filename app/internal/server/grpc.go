@@ -14,7 +14,7 @@ import (
 
 	"github.com/neo-fork-gotangra/hdyadmin-template/app/internal/security/cert"
 	"github.com/neo-fork-gotangra/hdyadmin-template/app/internal/service"
-	domainpb "github.com/neo-fork-gotangra/hdyadmin-template/pb/domain"
+	domainpb "github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain"
 )
 
 func NewGRPCServer(

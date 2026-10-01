@@ -11,7 +11,7 @@ managed:
   override:
     - file_option: go_package
       path: domain
-      value: github.com/neo-fork-gotangra/hdyadmin-template/pb/domain;domain_pb
+      value: github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain;domain_pb
 
 plugins:
   - local: protoc-gen-openapi

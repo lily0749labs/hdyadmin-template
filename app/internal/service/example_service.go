@@ -7,7 +7,7 @@ import (
 
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
-	domainpb "github.com/neo-fork-gotangra/hdyadmin-template/pb/domain"
+	domainpb "github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain"
 )
 
 type ExampleService struct {

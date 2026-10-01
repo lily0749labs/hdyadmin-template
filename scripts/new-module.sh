@@ -163,7 +163,7 @@ replace_project_text() {
 	while IFS= read -r -d '' file; do
 		relative_file="${file#./}"
 		case "$relative_file" in
-		scripts/new-module.sh | scripts/init-module.sh | pb/*.pb.go) continue ;;
+		scripts/new-module.sh | scripts/init-module.sh | pb/*.pb.go | api/pb/*.pb.go) continue ;;
 		esac
 		if LC_ALL=C grep -IFq -- "$old_value" "$file"; then
 			replace_in_file "$old_value" "$new_value" "$file"

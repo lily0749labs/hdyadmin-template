@@ -137,7 +137,7 @@ help:
 	@echo "hdyadmin-template 可用目标："
 	@echo "  make tools             安装固定版本的生成工具"
 	@echo "  make gen               生成 Go/TypeScript API、OpenAPI、Descriptor 和 Wire"
-	@echo "  make api               生成 Go Protobuf 代码到 pb/"
+	@echo "  make api               生成 Go Protobuf 代码到 api/pb/"
 	@echo "  make api-typescript    生成前端 TypeScript API 客户端"
 	@echo "  make openapi           生成 OpenAPI 文档"
 	@echo "  make descriptor        生成 Proto 描述文件"
