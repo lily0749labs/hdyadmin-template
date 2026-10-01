@@ -10,9 +10,11 @@ VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 GOFLAGS ?=
 LDFLAGS ?= -X main.version=$(VERSION)
 BINARY_NAME ?= hdyadmin-template-admin
-IMAGE_NAME ?= $(BINARY_NAME)
-IMAGE_TAG ?= $(VERSION)
-DOCKER_REGISTRY ?=
+
+CURRENT_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+
+# Docker 镜像构建与推送规则。
+include $(CURRENT_DIR)/docker.mk
 
 BUF_VERSION ?= v1.72.0
 PROTOBUF_VERSION ?= v1.36.12
@@ -25,7 +27,7 @@ TYPESCRIPT_HTTP_VERSION ?= v0.0.0-20260525125049-694cf6cd0529
 
 .PHONY: help tools gen api api-typescript ts openapi descriptor wire api-lint api-format \
 	frontend-install frontend-build embed-frontend build build-server run run-server \
-	run-frontend test test-cover check clean docker docker-tag docker-push
+	run-frontend test test-cover check clean
 
 .NOTPARALLEL: gen build
 
@@ -111,29 +113,6 @@ clean:
 	@rm -f coverage.out coverage.html
 	@echo "构建产物已清理。"
 
-docker:
-	@docker build \
-		-t $(IMAGE_NAME):$(IMAGE_TAG) \
-		-t $(IMAGE_NAME):latest \
-		--build-arg APP_VERSION=$(VERSION) \
-		-f ./Dockerfile \
-		.
-
-docker-tag: docker
-ifdef DOCKER_REGISTRY
-	@docker tag $(IMAGE_NAME):$(IMAGE_TAG) $(DOCKER_REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)
-	@docker tag $(IMAGE_NAME):latest $(DOCKER_REGISTRY)/$(IMAGE_NAME):latest
-endif
-
-docker-push: docker-tag
-ifdef DOCKER_REGISTRY
-	@docker push $(DOCKER_REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)
-	@docker push $(DOCKER_REGISTRY)/$(IMAGE_NAME):latest
-else
-	@docker push $(IMAGE_NAME):$(IMAGE_TAG)
-	@docker push $(IMAGE_NAME):latest
-endif
-
 help:
 	@echo "hdyadmin-template 可用目标："
 	@echo "  make tools             安装固定版本的生成工具"
@@ -147,6 +126,7 @@ help:
 	@echo "  make run-frontend      启动远程前端"
 	@echo "  make check             运行协议、Go 和前端检查"
 	@echo "  make build             构建完整模块"
-	@echo "  make docker            构建容器镜像"
+	@echo "  make docker            构建当前架构镜像并加载到本地 Docker"
+	@echo "  make docker-push       构建并推送 amd64、arm64 镜像"
 
 .DEFAULT_GOAL := help

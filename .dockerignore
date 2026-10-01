@@ -1,18 +1,35 @@
 .git
-.github
-.vscode
 .env
-.env.local
-.idea
-.pnpm-store
-bin
-certs
-coverage.out
-coverage.html
-frontend/admin/node_modules
-frontend/admin/dist
-tmp
-**/.DS_Store
+.env.*
+!.env.example
 
+# 本地构建与测试产物
+bin/
+dist/
+coverage.*
+*.out
+*.test
+*.log
+
+# 编辑器与临时文件
+.github/
+.idea/
+.vscode/
+.DS_Store
+.pnpm-store/
+certs/
+tmp/
+temp/
+**/.tmp/
+**/__debug_bin*
+
+# 前端依赖与本地构建结果
+frontend/admin/node_modules/
+frontend/admin/dist/
+
+# Docker 构建不需要的开发脚本
+scripts/
+
+# 前端产物由镜像构建阶段重新生成并嵌入。
 app/admin/cmd/server/assets/frontend-dist/*
 !app/admin/cmd/server/assets/frontend-dist/.gitkeep

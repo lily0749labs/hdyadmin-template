@@ -112,12 +112,46 @@ make test              运行 Go 测试
 make frontend-build    构建远程前端
 make build-server      构建 bin/hdyadmin-template-admin
 make build             构建前后端和最终服务端
-make docker            构建容器镜像
+make docker            构建当前架构镜像并加载到本地 Docker
+make docker-push       构建并推送 amd64、arm64 镜像
 ```
 
 `api/pb/`、`frontend/admin/src/generated/api/`、`openapi.yaml` 和 `descriptor.bin` 会提交到版本库，
 保证新克隆的项目可以直接执行 `go mod tidy` 和 `go test ./...`。修改 Proto 后必须重新执行
 `make gen`。
+
+## Docker 镜像
+
+镜像构建方式与 `hdyadmin-core` 保持一致：根 Makefile 引入独立的 `docker.mk`，
+统一使用 Docker Buildx 构建，并写入版本、源码、提交号、构建时间等 OCI 元数据。
+
+本地构建当前主机架构并加载到 Docker：
+
+```bash
+make docker
+```
+
+默认镜像地址为
+`reghub.hdyops.qzz.io/hdyadmin/hdyadmin-template-admin:<当前 Git 版本>`。
+仓库、命名空间、镜像名和版本均可覆盖：
+
+```bash
+make docker \
+  TARGET=registry.example.com \
+  PRJ=my-project \
+  IMAGE_NAME=my-module \
+  IMG_VERSION=v1.0.0
+```
+
+登录仓库并发布 `linux/amd64`、`linux/arm64` 多架构镜像：
+
+```bash
+make docker-push IMG_VERSION=v1.0.0
+```
+
+`docker-push` 会在交互终端安全询问仓库密码；CI 中应通过环境变量或未提交的
+`.env.local`/`.env` 设置 `Reghub_UserName`、`Reghub_Pwd`。还可用
+`DOCKER_PLATFORMS`、`DOCKER_OUTPUT` 和 `DOCKER_EXTRA_ARGS` 调整 Buildx 行为。
 
 ## 目录结构
 
