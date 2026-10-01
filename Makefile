@@ -74,7 +74,7 @@ api-format:
 frontend-install:
 	@cd frontend/admin && corepack pnpm install --frozen-lockfile
 
-frontend-build: api-typescript
+frontend-build: api-typescript frontend-install
 	@cd frontend/admin && corepack pnpm build
 
 embed-frontend: frontend-build
