@@ -69,14 +69,14 @@ api-format:
 	@cd api && buf format protos -w
 
 frontend-install:
-	@cd frontend && corepack pnpm install --frozen-lockfile
+	@cd frontend/admin && corepack pnpm install --frozen-lockfile
 
 frontend-build: api-typescript
-	@cd frontend && corepack pnpm build
+	@cd frontend/admin && corepack pnpm build
 
 embed-frontend: frontend-build
 	@find app/admin/cmd/server/assets/frontend-dist -mindepth 1 ! -name .gitkeep -delete
-	@cp -R frontend/dist/. app/admin/cmd/server/assets/frontend-dist/
+	@cp -R frontend/admin/dist/. app/admin/cmd/server/assets/frontend-dist/
 
 build: gen embed-frontend build-server
 
@@ -91,7 +91,7 @@ run-server:
 	@go run ./app/admin/cmd/server -c ./app/admin/configs
 
 run-frontend:
-	@cd frontend && corepack pnpm dev
+	@cd frontend/admin && corepack pnpm dev
 
 test:
 	@go test ./...
@@ -105,7 +105,7 @@ check: api-lint test frontend-build
 
 clean:
 	@find bin -mindepth 1 -delete 2>/dev/null || true
-	@find frontend/dist -mindepth 1 -delete 2>/dev/null || true
+	@find frontend/admin/dist -mindepth 1 -delete 2>/dev/null || true
 	@find app/admin/cmd/server/assets/frontend-dist -mindepth 1 ! -name .gitkeep -delete
 	@rm -f coverage.out coverage.html
 	@echo "构建产物已清理。"

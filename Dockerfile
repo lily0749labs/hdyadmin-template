@@ -25,11 +25,11 @@ FROM node:20-alpine AS frontend-builder
 
 RUN corepack enable && corepack prepare pnpm@9 --activate
 
-WORKDIR /frontend
-COPY frontend/package.json frontend/pnpm-lock.yaml ./
+WORKDIR /frontend/admin
+COPY frontend/admin/package.json frontend/admin/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
-COPY frontend/ ./
-COPY --from=ts-codegen /src/frontend/src/generated/ src/generated/
+COPY frontend/admin/ ./
+COPY --from=ts-codegen /src/frontend/admin/src/generated/ src/generated/
 RUN pnpm build
 
 ##################################
@@ -50,7 +50,7 @@ WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-COPY --from=frontend-builder /frontend/dist app/admin/cmd/server/assets/frontend-dist/
+COPY --from=frontend-builder /frontend/admin/dist app/admin/cmd/server/assets/frontend-dist/
 
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
     go build -ldflags "-X main.version=${APP_VERSION} -s -w" \

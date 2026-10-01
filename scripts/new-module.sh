@@ -232,14 +232,14 @@ initialize_module() {
 			app/admin/internal/server/grpc.go
 			app/admin/internal/server/http.go
 			api/buf.openapi.gen.yaml
-			frontend/index.html
-			frontend/package.json
-			frontend/vite.config.ts
-			frontend/vite.hotreload.config.ts
-			frontend/src/index.ts
-			frontend/src/routes.ts
-			frontend/src/api/client.ts
-			frontend/src/locales/en-US.json
+			frontend/admin/index.html
+			frontend/admin/package.json
+			frontend/admin/vite.config.ts
+			frontend/admin/vite.hotreload.config.ts
+			frontend/admin/src/index.ts
+			frontend/admin/src/routes.ts
+			frontend/admin/src/api/client.ts
+			frontend/admin/src/locales/en-US.json
 			.env.example
 			.vscode/launch.json
 			.vscode/tasks.json
@@ -257,8 +257,8 @@ initialize_module() {
 		replace_in_file "TEMPLATE" "$module_env_prefix" app/admin/internal/security/cert/cert_manager.go
 		replace_in_file "Starter module for hdyadmin" "$description" app/admin/cmd/server/main.go
 		replace_in_file "Starter module for hdyadmin" "$description" app/admin/cmd/server/assets/menus.yaml
-		replace_in_file "Example Module" "$menu_name_en" frontend/src/locales/en-US.json
-		replace_in_file "示例模块" "$menu_name_zh" frontend/src/locales/zh-CN.json
+		replace_in_file "Example Module" "$menu_name_en" frontend/admin/src/locales/en-US.json
+		replace_in_file "示例模块" "$menu_name_zh" frontend/admin/src/locales/zh-CN.json
 
 		go mod edit -module "$go_module"
 

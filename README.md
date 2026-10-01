@@ -110,7 +110,7 @@ make build             构建前后端和最终服务端
 make docker            构建容器镜像
 ```
 
-`api/pb/`、`frontend/src/generated/api/`、`openapi.yaml` 和 `descriptor.bin` 会提交到版本库，
+`api/pb/`、`frontend/admin/src/generated/api/`、`openapi.yaml` 和 `descriptor.bin` 会提交到版本库，
 保证新克隆的项目可以直接执行 `go mod tidy` 和 `go test ./...`。修改 Proto 后必须重新执行
 `make gen`。
 
@@ -123,7 +123,7 @@ app/admin/cmd/server/             服务入口和注册资产
 app/admin/internal/service/       业务服务
 app/admin/internal/server/        gRPC 与资源 HTTP 服务
 app/admin/internal/security/cert/ LCM/mTLS 证书引导
-frontend/                         管理后台远程模块
+frontend/admin/                   管理后台远程模块
 scripts/new-module.sh             克隆模板并初始化的一键创建入口
 ```
 

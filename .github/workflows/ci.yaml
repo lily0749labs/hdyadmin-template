@@ -51,7 +51,7 @@ jobs:
           go install github.com/go-kratos/protoc-gen-typescript-http@v0.0.0-20260525125049-694cf6cd0529
 
       - name: Install frontend dependencies
-        working-directory: frontend
+        working-directory: frontend/admin
         run: pnpm install --frozen-lockfile
 
       - name: Generate

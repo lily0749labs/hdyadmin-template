@@ -37,7 +37,7 @@
       "type": "node-terminal",
       "request": "launch",
       "command": "corepack pnpm dev",
-      "cwd": "${workspaceFolder}/frontend"
+      "cwd": "${workspaceFolder}/frontend/admin"
     }
   ],
   "compounds": [

@@ -18,9 +18,9 @@ coverage.html
 certs/
 
 # Frontend
-frontend/node_modules/
-frontend/dist/
-frontend/.__mf__temp/
+frontend/admin/node_modules/
+frontend/admin/dist/
+frontend/admin/.__mf__temp/
 .pnpm-store/
 
 # Embedded frontend build output

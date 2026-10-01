@@ -11,7 +11,7 @@ managed:
 
 plugins:
   - local: protoc-gen-typescript-http
-    out: ../frontend/src/generated/api
+    out: ../frontend/admin/src/generated/api
     strategy: all
 
 inputs:
