@@ -1,18 +1,35 @@
+# 数据访问配置。模板当前未注入数据仓储，扩展 Repo 层后可直接复用这些连接参数。
 data:
+  # PostgreSQL 连接池配置。
   database:
+    # 数据库驱动名称。
     driver: "postgresql"
+    # 连接串；生产环境应通过配置中心或密钥管理服务覆盖，避免提交真实凭据。
     source: "postgres://postgres:admin123@localhost:5432/gwa?sslmode=disable"
+    # 启动时是否自动执行数据库迁移。
     migrate: true
+    # 连接池中的最大空闲连接数。
     max_idle: 10
+    # 连接池允许同时打开的最大连接数。
     max_open: 100
+    # 单个连接可复用的最长时间。
     max_lifetime: 3600s
+    # 是否输出数据库调试日志。
     debug: false
 
+  # Redis 连接与读写超时配置。
   redis:
+    # 连接协议，通常使用 TCP。
     network: "tcp"
+    # Redis 服务地址。
     addr: "localhost:6379"
+    # Redis 密码；空字符串表示不鉴权。
     password: ""
+    # 使用的 Redis 逻辑数据库编号。
     db: 0
+    # 建立连接的超时时间。
     dial_timeout: 5s
+    # 单次读取操作的超时时间。
     read_timeout: 3s
+    # 单次写入操作的超时时间。
     write_timeout: 3s

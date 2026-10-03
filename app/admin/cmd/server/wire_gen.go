@@ -16,7 +16,8 @@ import (
 
 // Injectors from wire.go:
 
-// initApp 描述最小依赖图；新增 Repo、Service 或 Server 后更新对应 ProviderSet。
+// initApp 描述应用的最小依赖图；新增 Repo、Service 或 Server 后需更新对应 ProviderSet，
+// 再执行 make wire 生成实际运行时使用的 wire_gen.go。
 func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	v, err := cert.NewCertManager(context)
 	if err != nil {

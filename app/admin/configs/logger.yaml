@@ -1,4 +1,8 @@
+# 应用日志配置，由 Bootstrap 在启动时加载。
 logger:
+  # 最低输出级别；开发环境使用 debug，生产环境通常使用 info 或更高级别。
   level: "debug"
+  # 日志输出目标；stdout 便于容器运行时统一采集。
   output: "stdout"
+  # JSON 格式便于日志平台解析和检索。
   format: "json"

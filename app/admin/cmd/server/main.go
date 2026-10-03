@@ -1,4 +1,4 @@
-// hdyadmin 独立业务模块启动入口。
+// Package main 是 hdyadmin 模板模块的进程启动入口。
 package main
 
 import (
@@ -18,20 +18,23 @@ import (
 )
 
 var (
-	// 创建业务模块时需要同步修改这些元数据。
+	// 创建新业务模块时需要同步修改这些元数据以及 assets/menus.yaml。
 	moduleID    = "template"
 	moduleName  = "Template"
 	version     = "1.0.0"
 	description = "Template module for hdyadmin"
 )
 
+// globalRegistration 保存模块注册与心跳任务，以便进程退出时主动停止。
 var globalRegistration *registration.RegistrationHelper
 
+// newApp 启动模块注册，并把已构造的 gRPC、HTTP 服务装配到 Kratos 应用中。
 func newApp(
 	ctx *bootstrap.Context,
 	gs *grpc.Server,
 	hs *kratosHTTP.Server,
 ) *kratos.App {
+	// 注册信息供 Core 发现本模块、建立动态代理并创建菜单与权限。
 	globalRegistration = registration.StartRegistration(ctx, ctx.GetLogger(), &registration.Config{
 		ModuleID:          moduleID,
 		ModuleName:        moduleName,
@@ -52,6 +55,7 @@ func newApp(
 	return bootstrap.NewApp(ctx, gs, hs)
 }
 
+// runApp 创建应用上下文、执行 Wire 生成的依赖注入函数，并托管完整生命周期。
 func runApp() error {
 	ctx := bootstrap.NewContext(
 		context.Background(),
@@ -64,6 +68,7 @@ func runApp() error {
 	)
 
 	defer func() {
+		// 无论正常退出还是启动失败，都停止后台注册与心跳，避免资源泄漏。
 		if globalRegistration != nil {
 			globalRegistration.Stop()
 		}
@@ -72,6 +77,7 @@ func runApp() error {
 	return bootstrap.RunApp(ctx, initApp)
 }
 
+// main 将启动错误提升为 panic，使进程以非零状态退出并交由运行环境处理。
 func main() {
 	if err := runApp(); err != nil {
 		panic(err)

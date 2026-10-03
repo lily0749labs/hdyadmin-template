@@ -1,26 +1,37 @@
 # hdyadmin-core 在模块注册时读取此文件，创建菜单、权限和默认角色。
+# 模块元数据必须与 cmd/server/main.go 中的 moduleID、moduleName 保持一致。
 module:
+  # 模块唯一标识，用作菜单和权限的命名空间。
   id: template
+  # 模块显示名称。
   name: Template
+  # 模块用途说明。
   description: Template module for hdyadmin
 
+# 前端导航菜单；authority 限制菜单对哪些平台角色可见。
 menus:
+  # 一级目录，作为本模块页面的导航入口。
   - id: template
     parent_id: null
     type: CATALOG
+    # 国际化键，由前端语言包解析为实际文案。
     name: template.menu.root
     path: /template
     icon: lucide:blocks
+    # 数值越小，菜单越靠前。
     order: 900
     authority:
       - platform:admin
       - tenant:manager
 
+  # 示例业务页面，挂载在上述一级目录下。
   - id: template-example
     parent_id: template
     type: MENU
     name: template.menu.example
+    # 子菜单使用相对路径，最终路由为 /template/example。
     path: example
+    # 远程前端中的 Vue 页面组件路径。
     component: app/template/example/index.vue
     icon: lucide:flask-conical
     order: 1
@@ -28,19 +39,23 @@ menus:
       - platform:admin
       - tenant:manager
 
+# 权限组用于在管理端集中展示和分配本模块权限。
 permission_groups:
   - name: Template
     module: template
     description: Template module permissions
     permissions:
+      # 权限码应保持稳定，业务鉴权和角色定义均依赖它。
       - name: View Example
         code: template.example.view
         description: View the example page and call the example API
 
+# 模块注册时创建的系统角色及其默认权限集合。
 roles:
   - name: Template Administrator
     code: template.admin
     description: Full access to the Template module
+    # 系统角色由平台维护，不作为普通自定义角色删除。
     is_system: true
     permissions:
       - template.example.view

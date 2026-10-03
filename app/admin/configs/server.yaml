@@ -1,10 +1,21 @@
+# 传输层配置。当前模板提供 gRPC 业务服务，HTTP 服务地址由 MODULE_HTTP_ADDR 控制。
 server:
+  # gRPC 服务配置。
   grpc:
+    # 本机监听地址；对外注册地址可通过 GRPC_ADVERTISE_ADDR 单独覆盖。
     addr: "127.0.0.1:10400"
+    # 单次请求的默认处理超时时间。
     timeout: 30s
+    # 中间件开关的标准配置结构。
+    # 当前 NewGRPCServer 会固定装配下列中间件；扩展时可按这些开关动态组装。
     middleware:
+      # 记录请求日志。
       enable_logging: true
+      # 捕获 panic，避免单个请求导致进程退出。
       enable_recovery: true
+      # 链路追踪；本地默认关闭。
       enable_tracing: false
+      # 根据 Proto 校验规则验证请求参数。
       enable_validate: true
+      # 在调用链中传递请求元数据。
       enable_metadata: true
