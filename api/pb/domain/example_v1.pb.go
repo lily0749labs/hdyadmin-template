@@ -9,14 +9,13 @@
 package domain_pb
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -128,8 +127,8 @@ const file_domain_example_v1_proto_rawDesc = "" +
 	"\x10SayHelloResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage2\x82\x01\n" +
 	"\x0eExampleService\x12p\n" +
-	"\bSayHello\x12\".domain.example.v1.SayHelloRequest\x1a#.domain.example.v1.SayHelloResponse\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/v1/examples/{name}B\xd5\x01\n" +
-	"\x15com.domain.example.v1B\x0eExampleV1ProtoP\x01ZFgithub.com/lily0749labs/hdyadmin-template/api/pb/domain;domain_pb\xa2\x02\x03DEX\xaa\x02\x11Domain.Example.V1\xca\x02\x11Domain\\Example\\V1\xe2\x02\x1dDomain\\Example\\V1\\GPBMetadata\xea\x02\x13Domain::Example::V1b\x06proto3"
+	"\bSayHello\x12\".domain.example.v1.SayHelloRequest\x1a#.domain.example.v1.SayHelloResponse\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/v1/examples/{name}B\xd0\x01\n" +
+	"\x15com.domain.example.v1B\x0eExampleV1ProtoP\x01ZAgithub.com/lily0749labs/hdyadmin-template/api/pb/domain;domain_pb\xa2\x02\x03DEX\xaa\x02\x11Domain.Example.V1\xca\x02\x11Domain\\Example\\V1\xe2\x02\x1dDomain\\Example\\V1\\GPBMetadata\xea\x02\x13Domain::Example::V1b\x06proto3"
 
 var (
 	file_domain_example_v1_proto_rawDescOnce sync.Once

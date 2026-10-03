@@ -82,14 +82,14 @@ export default defineConfig(async ({ command, mode }) => {
       // standalone 模式把 /api 转发到模块 HTTP 服务；connected 模式由 Core 代理。
       ...(standalone
         ? {
-          proxy: {
-            '/api': {
-              target: standaloneBackend,
-              changeOrigin: true,
-              rewrite: (path: string) => path.replace(/^\/api/, ''),
+            proxy: {
+              '/api': {
+                target: standaloneBackend,
+                changeOrigin: true,
+                rewrite: (path: string) => path.replace(/^\/api/, ''),
+              },
             },
-          },
-        }
+          }
         : {}),
     },
     build: {
