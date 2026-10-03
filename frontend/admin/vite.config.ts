@@ -33,7 +33,7 @@ async function waitForStandaloneBackend(timeout = 15_000): Promise<string> {
 export default defineConfig(async ({ command, mode }) => {
   const env = loadEnv(mode, projectRoot, 'HDYADMIN_');
   const shellBaseURL = (
-    env.HDYADMIN_SHELL_URL || 'http://localhost:8080'
+    env.ADMIN_SHELL_URL || 'http://localhost:8080'
   ).replace(/\/+$/, '');
   const standalone = mode === 'standalone';
   const standaloneBackend = standalone
