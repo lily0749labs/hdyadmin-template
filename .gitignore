@@ -1,4 +1,4 @@
-# Go
+# Go 编译产物、测试文件和本地依赖副本
 *.exe
 *.exe~
 *.dll
@@ -10,34 +10,35 @@ vendor/
 bin/
 coverage.html
 
-# Local configuration and certificates
+# 本地配置与证书；真实凭据不得提交到版本库
 .env
 .env.local
 *.cert
 *.key
 certs/
 
-# Frontend
+# 前端依赖、构建产物和 Module Federation 临时目录
 frontend/admin/node_modules/
 frontend/admin/dist/
 frontend/admin/.__mf__temp/
 .pnpm-store/
 
-# Embedded frontend build output
+# 服务端内嵌的前端构建产物；只保留空目录占位文件
 app/admin/cmd/server/assets/frontend-dist/*
 !app/admin/cmd/server/assets/frontend-dist/.gitkeep
 
-# Editors and OS
+# 编辑器、操作系统和本地 Go 工作区文件
 .idea/
 *.swp
 .DS_Store
 **/.DS_Store
 go.work
 
-# Temporary runtime files
+# 运行时临时文件、日志和调试器产物
 tmp/
 *.log
 __debug_bin*
 
+# 本地联调时可能产生的临时模块目录
 vip/
 template/

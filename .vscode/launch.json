@@ -1,7 +1,9 @@
 {
+  // VS Code 调试配置：分别支持完全本地的 standalone 模式和连接 Core/LCM 的联调模式。
   "version": "0.2.0",
   "configurations": [
     {
+      // 后端独立模式关闭证书与模块注册，业务 HTTP 路由由模块直接提供。
       "name": "Debug template backend (standalone)",
       "type": "go",
       "request": "launch",
@@ -18,6 +20,7 @@
       }
     },
     {
+      // 后端联调模式从 .env.local 加载 LCM、Core 和证书相关配置。
       "name": "Debug template backend (connected)",
       "type": "go",
       "request": "launch",
@@ -28,6 +31,7 @@
       "envFile": "${workspaceFolder}/.env.local"
     },
     {
+      // 前端独立模式启动本地调试壳，并将 /api 代理到模块 HTTP 服务。
       "name": "Debug template frontend (standalone)",
       "type": "pwa-node",
       "request": "launch",
@@ -44,6 +48,7 @@
       }
     },
     {
+      // 前端联调模式由宿主 Shell 加载远程模块，调试器打开宿主中的模块路由。
       "name": "Debug template frontend (connected)",
       "type": "pwa-node",
       "request": "launch",
@@ -62,6 +67,7 @@
   ],
   "compounds": [
     {
+      // 一次启动无需外部服务的前后端调试环境。
       "name": "Debug template standalone (backend + frontend)",
       "configurations": [
         "Debug template backend (standalone)",
@@ -70,6 +76,7 @@
       "stopAll": true
     },
     {
+      // 一次启动连接真实 Core/LCM/宿主 Shell 的前后端调试环境。
       "name": "Debug template connected (backend + frontend)",
       "configurations": [
         "Debug template backend (connected)",

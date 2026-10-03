@@ -4,7 +4,10 @@ yaml-files:
   - "*.yaml"
   - "*.yml"
   - ".yamllint"
+# 基于默认规则，仅覆盖项目确有需要的格式约束。
 extends: "default"
 rules:
+  # 要求字符串显式加引号，避免不同 YAML 解析器产生类型歧义。
   quoted-strings: "enable"
+  # 配置中的长 URL、命令和说明不限制行宽。
   line-length: "disable"

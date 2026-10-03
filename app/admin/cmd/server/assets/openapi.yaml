@@ -16,6 +16,7 @@ paths:
             parameters:
                 - name: name
                   in: path
+                  description: name 是要写入问候语的名称，长度限制为 1 到 100 个字符。
                   required: true
                   schema:
                     type: string
@@ -33,5 +34,7 @@ components:
             properties:
                 message:
                     type: string
+                    description: message 是服务端生成的完整问候文本。
+            description: SayHelloResponse 是问候接口的响应结果。
 tags:
     - name: ExampleService

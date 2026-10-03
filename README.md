@@ -115,6 +115,15 @@ Proto/TypeScript 生成代码、OpenAPI、Descriptor、Wire 文件以及 `.env.l
 保证新克隆的项目可以直接执行 `go mod tidy` 和 `go test ./...`。修改 Proto 后必须重新执行
 `make gen`。
 
+## 文件说明与注释约定
+
+仓库中的手写源码、构建脚本和 YAML 配置使用中文注释说明职责、关键流程与安全限制。更细的目录说明见
+`app/README.md`、`api/README.md` 和 `frontend/admin/README.md`。
+
+自动生成文件、二进制 Descriptor、依赖锁文件、校验和文件以及严格 JSON 数据不直接手改注释：生成代码的
+说明来自 Proto 源文件，锁文件由对应包管理工具维护，JSON 文件则由相邻 README 统一解释。这样可以避免
+重新生成时丢失说明，或因添加非标准注释导致解析失败。
+
 ## Docker 镜像
 
 镜像构建方式与 `hdyadmin-core` 保持一致：根 Makefile 引入独立的 `docker.mk`，

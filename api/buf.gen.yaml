@@ -1,8 +1,10 @@
 # 生成 Go Protobuf、gRPC、Kratos HTTP 和日志脱敏代码。
 version: v2
 
+# 每次生成前清理输出目录，避免已删除协议留下陈旧文件。
 clean: true
 
+# 统一覆盖本项目 Proto 的 go_package；第三方依赖保留其原始声明。
 managed:
   enabled: true
   disable:
@@ -14,21 +16,25 @@ managed:
       value: github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain;domain_pb
 
 plugins:
+  # 基础消息与反射代码。
   - local: protoc-gen-go
     out: pb
     opt:
       - paths=source_relative
 
+  # gRPC 客户端、服务端接口和注册代码。
   - local: protoc-gen-go-grpc
     out: pb
     opt:
       - paths=source_relative
 
+  # 根据 google.api.http 注解生成 Kratos HTTP 适配层。
   - local: protoc-gen-go-http
     out: pb
     opt:
       - paths=source_relative
 
+  # 生成日志脱敏包装器，避免敏感 Proto 字段直接输出。
   - local: protoc-gen-redact
     out: pb
     strategy: all
@@ -37,4 +43,5 @@ plugins:
       - lang=go
 
 inputs:
+  # 仅处理仓库内的业务协议目录。
   - directory: protos

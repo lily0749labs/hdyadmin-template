@@ -1,11 +1,13 @@
 # hdyadmin 独立业务模块构建入口
 
+# 优先加载仅供本机使用的 .env.local，其次加载 .env，并导出给所有子命令。
 ENV_FILE := $(firstword $(wildcard .env.local .env))
 ifneq (,$(ENV_FILE))
     include $(ENV_FILE)
     export
 endif
 
+# 构建元数据；均可通过环境变量或 make 命令行参数覆盖。
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 GOFLAGS ?=
 LDFLAGS ?= -X main.version=$(VERSION)
@@ -16,6 +18,7 @@ CURRENT_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 # Docker 镜像构建与推送规则。
 include $(CURRENT_DIR)/docker.mk
 
+# 代码生成工具版本。除 TypeScript 插件外均固定版本，保证生成结果可复现。
 BUF_VERSION ?= v1.72.0
 PROTOBUF_VERSION ?= v1.36.12
 GRPC_GO_VERSION ?= v1.6.2
@@ -49,6 +52,7 @@ gen: api api-typescript openapi descriptor wire
 api:
 	@cd api && buf generate --template buf.gen.yaml
 
+# 生成前端调用接口所需的 TypeScript 客户端。
 api-typescript:
 	@cd api && buf generate --template buf.typescript.gen.yaml
 
@@ -58,12 +62,14 @@ ts: api-typescript
 openapi:
 	@cd api && buf generate --template buf.openapi.gen.yaml
 
+# 生成供 Core 动态发现 gRPC 服务使用的 Proto 描述符集合。
 descriptor:
 	@cd api && buf build -o ../app/admin/cmd/server/assets/descriptor.bin
 
 wire:
 	@cd app/admin && go run -mod=mod github.com/google/wire/cmd/wire ./cmd/server
 
+# 同时检查 Buf 规范和 Proto 格式，不自动修改文件。
 api-lint:
 	@cd api && buf lint
 	@cd api && buf format protos --diff --exit-code
@@ -71,12 +77,14 @@ api-lint:
 api-format:
 	@cd api && buf format protos -w
 
+# 按锁文件安装前端依赖；锁文件不一致时立即失败。
 frontend-install:
 	@cd frontend/admin && corepack pnpm install --frozen-lockfile
 
 frontend-build: api-typescript frontend-install
 	@cd frontend/admin && corepack pnpm build
 
+# 将前端产物复制到 Go 嵌入目录，同时保留用于提交空目录的 .gitkeep。
 embed-frontend: frontend-build
 	@find app/admin/cmd/server/assets/frontend-dist -mindepth 1 ! -name .gitkeep -delete
 	@cp -R frontend/admin/dist/. app/admin/cmd/server/assets/frontend-dist/
@@ -107,6 +115,7 @@ run-frontend:
 run-frontend-connected:
 	@cd frontend/admin && corepack pnpm dev:connected
 
+# 运行仓库内全部 Go 测试。
 test:
 	@go test ./...
 
@@ -115,14 +124,17 @@ test-cover:
 	@go tool cover -html=coverage.out -o coverage.html
 	@echo "覆盖率报告已生成：coverage.html"
 
+# CI 前的聚合检查：协议规范、Go 测试和前端构建。
 check: api-lint test frontend-build
 
+# 清理可重新生成的构建产物，但保留前端依赖以便继续开发。
 clean:
 	@find bin frontend/admin/dist frontend/admin/.__mf__temp -depth -delete 2>/dev/null || true
 	@find app/admin/cmd/server/assets/frontend-dist -mindepth 1 ! -name .gitkeep -delete
 	@find coverage.out coverage.html -type f -delete 2>/dev/null || true
 	@echo "构建产物已清理（保留 frontend/admin/node_modules）。"
 
+# 在 clean 基础上继续删除前端依赖和项目内 pnpm 缓存。
 clean-all: clean
 	@find frontend/admin/node_modules .pnpm-store frontend/admin/.pnpm-store -depth -delete 2>/dev/null || true
 	@echo "前端依赖和项目内 pnpm 缓存已清理。"

@@ -128,13 +128,17 @@ export function createDefaultTransport(opts?: TransportOptions): ClientTransport
   };
 }
 
+// SayHelloRequest 是问候接口的请求参数。
 export type SayHelloRequest = {
+  // name 是要写入问候语的名称，长度限制为 1 到 100 个字符。
   //
   // Behaviors: REQUIRED
   name: string | undefined;
 };
 
+// SayHelloResponse 是问候接口的响应结果。
 export type SayHelloResponse = {
+  // message 是服务端生成的完整问候文本。
   message: string | undefined;
 };
 

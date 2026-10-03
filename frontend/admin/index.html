@@ -1,12 +1,15 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
+    <!-- standalone 调试页入口；远程模块被宿主加载时不使用此 HTML。 -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>hdyadmin Template Remote</title>
   </head>
   <body>
+    <!-- Vue 应用挂载点。 -->
     <div id="app"></div>
+    <!-- Vite 开发模式从独立调试入口启动应用。 -->
     <script type="module" src="/src/standalone.ts"></script>
   </body>
 </html>

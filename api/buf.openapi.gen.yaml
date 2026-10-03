@@ -1,6 +1,7 @@
 # 根据 google.api.http 注解生成模块注册使用的 OpenAPI 文档。
 version: v2
 
+# 输出目录还包含菜单、描述符和前端资源，因此禁止整体清理。
 clean: false
 
 managed:
@@ -14,6 +15,7 @@ managed:
       value: github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain;domain_pb
 
 plugins:
+  # 合并所有服务为一份 OpenAPI 3 文档，供 Core 注册和开发工具读取。
   - local: protoc-gen-openapi
     strategy: all
     out: ../app/admin/cmd/server/assets

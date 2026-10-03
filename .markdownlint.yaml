@@ -1,4 +1,5 @@
 ---
+# 项目文档允许长行、Tab 和少量内嵌 HTML，其他规则沿用 markdownlint 默认值。
 line-length: false
 no-hard-tabs: false
 no-inline-html: false

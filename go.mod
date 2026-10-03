@@ -1,7 +1,10 @@
+// hdyadmin 模板模块的 Go 依赖清单；版本由 go mod tidy 统一维护。
 module github.com/neo-fork-gotangra/hdyadmin-template
 
+// 项目要求的最低 Go 语言版本。
 go 1.25.4
 
+// 业务代码直接导入的框架、协议、注册与校验依赖。
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.11-20260415201107-50325440f8f2.1
 	buf.build/go/protovalidate v1.2.0
@@ -16,6 +19,7 @@ require (
 	google.golang.org/protobuf v1.36.11
 )
 
+// 上述直接依赖传递引入的模块，通常不应手工增删。
 require (
 	cel.dev/expr v0.25.1 // indirect
 	dario.cat/mergo v1.0.2 // indirect

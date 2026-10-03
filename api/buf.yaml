@@ -1,14 +1,17 @@
 # hdyadmin 模块协议。版本保留在 Proto 包名和文件名中。
 version: v2
 
+# 当前 Buf 模块的 Proto 源码根目录。
 modules:
   - path: protos
 
+# 外部协议依赖：Google API HTTP 注解与 Protovalidate 字段约束。
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/bufbuild/protovalidate
 
 lint:
+  # 使用 Buf STANDARD 规则集，仅排除与本项目目录布局或兼容策略冲突的规则。
   use:
     - STANDARD
   except:
@@ -18,5 +21,6 @@ lint:
     - FIELD_NOT_REQUIRED
 
 breaking:
+  # 以文件为粒度检查破坏性 API 变更。
   use:
     - FILE

@@ -1,4 +1,5 @@
 {
+  // VS Code 任务与根 Makefile 目标一一对应，供调试配置和命令面板复用。
   "version": "2.0.0",
   "tasks": [
     {
@@ -54,6 +55,7 @@
     }
   ],
   "options": {
+    // 无论从哪个文件触发任务，都在仓库根目录执行 make。
     "cwd": "${workspaceFolder}"
   }
 }

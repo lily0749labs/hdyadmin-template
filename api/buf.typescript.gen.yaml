@@ -1,6 +1,7 @@
 # 生成远程前端使用的 TypeScript API 客户端。
 version: v2
 
+# 删除旧客户端后重新生成，避免残留已移除的接口。
 clean: true
 
 managed:
@@ -10,6 +11,7 @@ managed:
     - module: buf.build/bufbuild/protovalidate
 
 plugins:
+  # 生成前端可直接调用的 TypeScript HTTP 客户端。
   - local: protoc-gen-typescript-http
     out: ../frontend/admin/src/generated/api
     strategy: all

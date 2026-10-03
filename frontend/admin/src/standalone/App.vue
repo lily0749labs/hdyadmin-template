@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import routes from '../routes';
 import StandaloneMenu from './Menu.vue';
+
+// 独立调试壳直接复用模块路由生成侧边菜单，避免维护第二份导航配置。
 </script>
 
 <template>
+  <!-- 此布局只在 standalone 模式使用；连接宿主时由 shell/app-layout 提供外壳。 -->
   <div class="standalone-shell">
     <aside class="standalone-sidebar">
       <div class="standalone-brand">
