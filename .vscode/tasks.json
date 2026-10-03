@@ -3,6 +3,20 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Template: prepare env",
+      "type": "shell",
+      "command": "make",
+      "args": ["prepare-env"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Template: check connected env",
+      "type": "shell",
+      "command": "make",
+      "args": ["check-connected-env"],
+      "problemMatcher": []
+    },
+    {
       "label": "Template: install frontend",
       "type": "shell",
       "command": "make",

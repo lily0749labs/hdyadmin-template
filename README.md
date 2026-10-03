@@ -36,8 +36,12 @@ make frontend-install
 复制并填写环境变量：
 
 ```bash
-cp .env.example .env.local
+make prepare-env
 ```
+
+该命令只在 `.env.local` 不存在时从 `.env.example` 创建，绝不会覆盖已有本地配置。VS Code 的
+connected 调试配置也会在启动前自动执行此步骤，避免因文件缺失而出现 `ENOENT`。
+随后它会校验 LCM/Core 地址、共享密钥和 64 位 CA 指纹；占位值不会进入 Go 进程。
 
 需要与 `hdyadmin` 开发环境保持一致的变量包括：
 

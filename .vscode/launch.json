@@ -28,6 +28,7 @@
       "program": "${workspaceFolder}/app/admin/cmd/server",
       "cwd": "${workspaceFolder}/app/admin",
       "args": ["-c", "${workspaceFolder}/app/admin/configs"],
+      "preLaunchTask": "Template: check connected env",
       "envFile": "${workspaceFolder}/.env.local"
     },
     {

@@ -30,7 +30,8 @@ TYPESCRIPT_HTTP_VERSION ?= latest
 
 .PHONY: help tools gen api api-typescript ts openapi descriptor wire api-lint api-format \
 	frontend-install frontend-build embed-frontend build build-server run run-server \
-	run-standalone run-frontend run-frontend-connected test test-cover check clean clean-all
+	run-standalone run-frontend run-frontend-connected prepare-env check-connected-env \
+	test test-cover check clean clean-all
 
 .NOTPARALLEL: gen build
 
@@ -96,6 +97,37 @@ build-server:
 	@echo "构建 $(BINARY_NAME)..."
 	@go build $(GOFLAGS) -ldflags "$(LDFLAGS)" -o ./bin/$(BINARY_NAME) ./app/admin/cmd/server
 
+# 首次联调时创建本地环境文件；已有配置绝不覆盖。
+prepare-env:
+	@if test -f .env.local; then \
+		echo ".env.local 已存在，保持原配置。"; \
+	else \
+		cp .env.example .env.local; \
+		echo "已从 .env.example 创建 .env.local，请填写实际的 LCM/Core 地址与凭据。"; \
+	fi
+
+# connected 模式依赖真实的 LCM/Core 配置，启动调试器前先拦截空值和示例占位值。
+check-connected-env: prepare-env
+	@status=0; \
+	for key in LCM_BOOTSTRAP_ENDPOINT MODULE_BOOTSTRAP_SECRET LCM_CA_FINGERPRINT ADMIN_GRPC_ENDPOINT; do \
+		value="$$(awk -F= -v key="$$key" '$$1 == key { sub(/^[^=]*=/, ""); print; exit }' .env.local)"; \
+		case "$$value" in \
+			""|replace-with-*) echo "错误：.env.local 中的 $$key 尚未配置。"; status=1 ;; \
+		esac; \
+	done; \
+	fingerprint="$$(awk -F= '$$1 == "LCM_CA_FINGERPRINT" { sub(/^[^=]*=/, ""); print; exit }' .env.local)"; \
+	case "$$fingerprint" in \
+		""|replace-with-*) ;; \
+		*) if ! printf '%s' "$$fingerprint" | grep -Eq '^[0-9A-Fa-f]{64}$$'; then \
+			echo "错误：LCM_CA_FINGERPRINT 必须是 64 位 SHA-256 十六进制指纹。"; status=1; \
+		fi ;; \
+	esac; \
+	if test $$status -ne 0; then \
+		echo "请填写真实配置；如果本机未运行 LCM/Core，请选择 standalone 调试配置。"; \
+		exit $$status; \
+	fi; \
+	echo "connected 环境变量检查通过。"
+
 # 默认以 standalone 模式启动，不依赖 hdyadmin-lcm 和 hdyadmin-core。
 run: run-standalone
 
@@ -106,7 +138,7 @@ run-standalone:
 		go run ./app/admin/cmd/server -c ./app/admin/configs
 
 # 完整联调模式：使用 .env.local/.env 连接 LCM 申请证书并注册到 Core。
-run-server:
+run-server: check-connected-env
 	@go run ./app/admin/cmd/server -c ./app/admin/configs
 
 run-frontend:
@@ -148,6 +180,8 @@ help:
 	@echo "  make openapi           生成 OpenAPI 文档"
 	@echo "  make descriptor        生成 Proto 描述文件"
 	@echo "  make api-lint          检查 Proto 协议及格式"
+	@echo "  make prepare-env       缺失时从示例创建 .env.local（不覆盖已有配置）"
+	@echo "  make check-connected-env  检查 connected 调试所需的 LCM/Core 配置"
 	@echo "  make run               独立启动后端，不连接 LCM/Core"
 	@echo "  make run-server        联调启动后端，连接 LCM/Core"
 	@echo "  make run-frontend      启动可独立访问的前端调试页"
