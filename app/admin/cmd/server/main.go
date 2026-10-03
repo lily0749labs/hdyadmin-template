@@ -4,6 +4,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/go-kratos/kratos/v2"
@@ -90,6 +91,13 @@ func runApp() error {
 
 // main 将启动错误提升为 panic，使进程以非零状态退出并交由运行环境处理。
 func main() {
+	// VS Code connected 调试在预启动任务之后由进程加载本地环境文件，
+	// 避免调试适配器先读取不存在的 envFile 而直接报 ENOENT。
+	if envFile := os.Getenv("MODULE_ENV_FILE"); envFile != "" {
+		if err := loadEnvFile(envFile); err != nil {
+			panic(err)
+		}
+	}
 	if err := runApp(); err != nil {
 		panic(err)
 	}

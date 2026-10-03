@@ -29,7 +29,9 @@
       "cwd": "${workspaceFolder}/app/admin",
       "args": ["-c", "${workspaceFolder}/app/admin/configs"],
       "preLaunchTask": "Template: check connected env",
-      "envFile": "${workspaceFolder}/.env.local"
+      "env": {
+        "MODULE_ENV_FILE": "${workspaceFolder}/.env.local"
+      }
     },
     {
       // 前端独立模式启动本地调试壳，并将 /api 代理到模块 HTTP 服务。
