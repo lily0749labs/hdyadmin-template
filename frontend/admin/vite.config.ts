@@ -31,7 +31,7 @@ async function waitForStandaloneBackend(timeout = 15_000): Promise<string> {
 
 // 同一份配置同时支持 standalone 本地调试、connected 联调和生产构建。
 export default defineConfig(async ({ command, mode }) => {
-  const env = loadEnv(mode, projectRoot, 'HDYADMIN_');
+  const env = loadEnv(mode, projectRoot, 'DMIN_');
   const shellBaseURL = (
     env.ADMIN_SHELL_URL || 'http://localhost:8080'
   ).replace(/\/+$/, '');
@@ -82,14 +82,14 @@ export default defineConfig(async ({ command, mode }) => {
       // standalone 模式把 /api 转发到模块 HTTP 服务；connected 模式由 Core 代理。
       ...(standalone
         ? {
-            proxy: {
-              '/api': {
-                target: standaloneBackend,
-                changeOrigin: true,
-                rewrite: (path: string) => path.replace(/^\/api/, ''),
-              },
+          proxy: {
+            '/api': {
+              target: standaloneBackend,
+              changeOrigin: true,
+              rewrite: (path: string) => path.replace(/^\/api/, ''),
             },
-          }
+          },
+        }
         : {}),
     },
     build: {
