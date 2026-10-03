@@ -7,7 +7,7 @@ import (
 
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
-	domainpb "github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain"
+	domainpb "github.com/lily0749labs/hdyadmin-template/api/pb/domain"
 )
 
 // ExampleService 实现 Proto 定义的示例服务，用于验证模块注册和端到端调用链路。

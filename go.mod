@@ -1,5 +1,5 @@
 // hdyadmin 模板模块的 Go 依赖清单；版本由 go mod tidy 统一维护。
-module github.com/neo-fork-gotangra/hdyadmin-template
+module github.com/lily0749labs/hdyadmin-template
 
 // 项目要求的最低 Go 语言版本。
 go 1.25.4

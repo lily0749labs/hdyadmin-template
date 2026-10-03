@@ -13,7 +13,7 @@ managed:
   override:
     - file_option: go_package
       path: domain
-      value: github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain;domain_pb
+      value: github.com/lily0749labs/hdyadmin-template/api/pb/domain;domain_pb
 
 plugins:
   # 基础消息与反射代码。

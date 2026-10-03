@@ -13,9 +13,9 @@ import (
 	"github.com/go-tangra/go-tangra-common/middleware/mtls"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
-	domainpb "github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain"
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/security/cert"
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/service"
+	domainpb "github.com/lily0749labs/hdyadmin-template/api/pb/domain"
+	"github.com/lily0749labs/hdyadmin-template/app/admin/internal/security/cert"
+	"github.com/lily0749labs/hdyadmin-template/app/admin/internal/service"
 )
 
 // NewGRPCServer 根据应用配置创建 gRPC 服务，装配通用中间件、mTLS 和业务实现。

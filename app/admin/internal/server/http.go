@@ -13,9 +13,9 @@ import (
 	kratosHTTP "github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/tx7do/kratos-bootstrap/bootstrap"
 
-	domainpb "github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain"
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/cmd/server/assets"
-	"github.com/neo-fork-gotangra/hdyadmin-template/app/admin/internal/service"
+	domainpb "github.com/lily0749labs/hdyadmin-template/api/pb/domain"
+	"github.com/lily0749labs/hdyadmin-template/app/admin/cmd/server/assets"
+	"github.com/lily0749labs/hdyadmin-template/app/admin/internal/service"
 )
 
 const (

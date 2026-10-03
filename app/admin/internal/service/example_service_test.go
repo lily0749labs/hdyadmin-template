@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	domainpb "github.com/neo-fork-gotangra/hdyadmin-template/api/pb/domain"
+	domainpb "github.com/lily0749labs/hdyadmin-template/api/pb/domain"
 )
 
 func TestExampleServiceSayHello(t *testing.T) {
