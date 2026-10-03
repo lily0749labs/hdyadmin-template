@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
 const projectRoot = fileURLToPath(new URL('../..', import.meta.url));
 const runtimeDir = resolve(projectRoot, process.env.MODULE_RUNTIME_DIR || '.runtime');
@@ -31,6 +31,10 @@ async function waitForStandaloneBackend(timeout = 15_000): Promise<string> {
 
 // 同一份配置同时支持 standalone 本地调试、connected 联调和生产构建。
 export default defineConfig(async ({ command, mode }) => {
+  const env = loadEnv(mode, projectRoot, 'HDYADMIN_');
+  const shellBaseURL = (
+    env.HDYADMIN_SHELL_URL || 'http://localhost:8080'
+  ).replace(/\/+$/, '');
   const standalone = mode === 'standalone';
   const standaloneBackend = standalone
     ? await waitForStandaloneBackend()
@@ -52,7 +56,7 @@ export default defineConfig(async ({ command, mode }) => {
             name: 'shell',
             entry:
               command === 'serve'
-                ? 'http://localhost:5666/remoteEntry.js'
+                ? `${shellBaseURL}/remoteEntry.js`
                 : '/remoteEntry.js',
           },
         },

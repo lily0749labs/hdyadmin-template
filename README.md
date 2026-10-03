@@ -50,6 +50,7 @@ connected 调试配置也会在启动前自动执行此步骤，避免因文件�
 - `MODULE_BOOTSTRAP_SECRET`
 - `LCM_CA_FINGERPRINT`
 - `ADMIN_GRPC_ENDPOINT`
+- `HDYADMIN_SHELL_URL`
 
 不连接 LCM、Core 和宿主 Shell 时，可以启动完整的 standalone 调试链路：
 
@@ -74,14 +75,19 @@ VS Code 的 `Debug template standalone (backend + frontend)` 会启动前后端�
 然后打开可断点调试的浏览器。Connected 配置会打开宿主页面，并要求 LCM、Core 和宿主 Shell
 已经运行。
 
+宿主使用 Hash 路由，模块示例页的直接访问地址为
+`http://localhost:8080/#/template/example`。
+
 默认地址：
 
 | 服务 | 地址 |
 | --- | --- |
 | gRPC | `localhost:10400` |
+| 向 Docker Core 注册的 gRPC 地址 | `host.docker.internal:10400` |
 | 模块资源 HTTP | 由系统动态分配，见启动日志或 `.runtime/http-endpoint` |
 | 前端远程入口 | `http://localhost:3011/remoteEntry.js` |
-| 宿主前端 | `http://localhost:5666` |
+| Core gRPC | `localhost:7787` |
+| 宿主前端 | `http://localhost:8080` |
 
 模块注册成功后，可通过 Core 代理访问示例接口：
 

@@ -63,7 +63,7 @@
       "preLaunchTask": "Template: install frontend",
       "serverReadyAction": {
         "pattern": "Local:\\s+http://localhost:3011/",
-        "uriFormat": "http://localhost:5666/template/example",
+        "uriFormat": "http://localhost:8080/#/template/example",
         "action": "debugWithChrome"
       }
     }
