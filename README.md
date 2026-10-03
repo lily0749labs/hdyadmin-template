@@ -54,8 +54,9 @@ make run-frontend
 ```
 
 浏览器访问 `http://localhost:3011`。此模式关闭模块 mTLS、跳过 Core 注册，并由 Vite 将
-`/api` 请求代理到模块的 `10401` HTTP 端口，仅用于本地开发和冒烟测试。standalone
-调试壳会根据 `frontend/admin/src/routes.ts` 自动生成路由和侧边菜单，新增页面不需要维护第二份菜单。
+`/api` 请求代理到后端自动分配的空闲 HTTP 端口，仅用于本地开发和冒烟测试。后端会把
+实际地址写入 `.runtime/http-endpoint`，Vite 启动时自动等待并读取，不需要为新模块修改端口。
+standalone 调试壳会根据 `frontend/admin/src/routes.ts` 自动生成路由和侧边菜单，新增页面不需要维护第二份菜单。
 
 联调完整环境时，先确保 `.env.local` 中的 LCM/Core 地址和凭据正确，再分别启动后端和远程前端：
 
@@ -73,7 +74,7 @@ VS Code 的 `Debug template standalone (backend + frontend)` 会启动前后端�
 | 服务 | 地址 |
 | --- | --- |
 | gRPC | `localhost:10400` |
-| 模块资源 HTTP | `http://localhost:10401` |
+| 模块资源 HTTP | 由系统动态分配，见启动日志或 `.runtime/http-endpoint` |
 | 前端远程入口 | `http://localhost:3011/remoteEntry.js` |
 | 宿主前端 | `http://localhost:5666` |
 

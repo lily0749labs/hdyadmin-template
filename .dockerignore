@@ -20,6 +20,7 @@ coverage.*
 .pnpm-store/
 certs/
 tmp/
+.runtime/
 temp/
 **/.tmp/
 **/__debug_bin*

@@ -28,8 +28,16 @@ func initApp(context *bootstrap.Context) (*kratos.App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	httpServer := server.NewHTTPServer(context, exampleService)
-	app := newApp(context, grpcServer, httpServer)
+	httpServer, cleanup, err := server.NewHTTPServer(context, exampleService)
+	if err != nil {
+		return nil, nil, err
+	}
+	app, err := newApp(context, grpcServer, httpServer)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	return app, func() {
+		cleanup()
 	}, nil
 }

@@ -27,9 +27,14 @@ app/admin/
 - `configs/data.yaml`：数据库和 Redis 连接参数；当前示例服务尚未注入数据仓储。
 - `configs/logger.yaml`：日志级别、输出目标和编码格式。
 - `MODULE_TLS_DISABLED=1`：仅供本地冒烟测试使用，关闭 gRPC mTLS。
-- `MODULE_HTTP_ADDR`：覆盖 HTTP 监听地址，默认 `127.0.0.1:10401`。
+- `MODULE_HTTP_ADDR`：覆盖 HTTP 监听地址；默认 `127.0.0.1:0`，由系统自动分配空闲端口。
+- `MODULE_RUNTIME_DIR`：standalone 地址发现目录，默认是仓库根目录的 `.runtime`。
 - `MODULE_STANDALONE=1`：直接开放业务 HTTP 路由；常规部署由 Core 代理 gRPC。
-- `GRPC_ADVERTISE_ADDR`、`HTTP_ADVERTISE_ADDR`、`ADMIN_GRPC_ENDPOINT` 和 `FRONTEND_ENTRY_URL`：控制向 Core 上报的访问地址。
+- `HTTP_ADVERTISE_ADDR`：覆盖向 Core 上报的 HTTP 地址；留空时使用服务器实际绑定的地址。
+- `GRPC_ADVERTISE_ADDR`、`ADMIN_GRPC_ENDPOINT` 和 `FRONTEND_ENTRY_URL`：控制向 Core 上报的其他访问地址。
+
+standalone 模式下，后端会原子写入 `.runtime/http-endpoint`，Vite 通过健康检查确认地址有效后再启动代理。
+运行结束时该文件会自动清理。容器内部仍使用固定的 `10401`，不同容器的网络相互隔离，不会产生本机端口冲突。
 
 ## 生成文件
 
@@ -39,4 +44,3 @@ app/admin/
 - `cmd/server/assets/openapi.yaml`：运行 `make openapi` 生成。
 - `cmd/server/assets/descriptor.bin`：运行 `make descriptor` 生成，属于二进制文件，无法添加源码注释。
 - `cmd/server/assets/frontend-dist/.gitkeep`：仅用于保留空目录。
-

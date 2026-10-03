@@ -36,6 +36,7 @@ go.work
 
 # 运行时临时文件、日志和调试器产物
 tmp/
+.runtime/
 *.log
 __debug_bin*
 

@@ -1,10 +1,40 @@
 import { federation } from '@module-federation/vite';
 import vue from '@vitejs/plugin-vue';
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 
+const projectRoot = fileURLToPath(new URL('../..', import.meta.url));
+const runtimeDir = resolve(projectRoot, process.env.MODULE_RUNTIME_DIR || '.runtime');
+const runtimeEndpointFile = resolve(runtimeDir, 'http-endpoint');
+
+// 等待 standalone 后端发布系统分配的真实端口，并通过健康检查排除崩溃遗留的旧地址。
+async function waitForStandaloneBackend(timeout = 15_000): Promise<string> {
+  const deadline = Date.now() + timeout;
+  while (Date.now() < deadline) {
+    try {
+      const endpoint = (await readFile(runtimeEndpointFile, 'utf8')).trim();
+      const response = await fetch(`${endpoint}/health`, {
+        signal: AbortSignal.timeout(500),
+      });
+      if (response.ok) return endpoint;
+    } catch {
+      // 后端尚未完成监听时短暂等待；超时后再向开发者报告明确错误。
+    }
+    await new Promise((resolveWait) => setTimeout(resolveWait, 200));
+  }
+  throw new Error(
+    `等待 standalone 后端超时，请先启动 make run；地址文件：${runtimeEndpointFile}`,
+  );
+}
+
 // 同一份配置同时支持 standalone 本地调试、connected 联调和生产构建。
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(async ({ command, mode }) => {
   const standalone = mode === 'standalone';
+  const standaloneBackend = standalone
+    ? await waitForStandaloneBackend()
+    : 'http://127.0.0.1';
 
   return {
     // 开发服务器从根路径提供资源；生产产物由 Core 挂载到模块专属前缀。
@@ -50,7 +80,7 @@ export default defineConfig(({ command, mode }) => {
         ? {
             proxy: {
               '/api': {
-                target: 'http://127.0.0.1:10401',
+                target: standaloneBackend,
                 changeOrigin: true,
                 rewrite: (path: string) => path.replace(/^\/api/, ''),
               },

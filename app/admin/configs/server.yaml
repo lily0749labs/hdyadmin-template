@@ -1,4 +1,4 @@
-# 传输层配置。当前模板提供 gRPC 业务服务，HTTP 服务地址由 MODULE_HTTP_ADDR 控制。
+# 传输层配置。当前模板提供 gRPC 业务服务；HTTP 默认自动分配端口，也可由 MODULE_HTTP_ADDR 覆盖。
 server:
   # gRPC 服务配置。
   grpc:

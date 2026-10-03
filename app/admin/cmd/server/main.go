@@ -3,6 +3,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/go-kratos/kratos/v2"
@@ -33,7 +34,17 @@ func newApp(
 	ctx *bootstrap.Context,
 	gs *grpc.Server,
 	hs *kratosHTTP.Server,
-) *kratos.App {
+) (*kratos.App, error) {
+	// 未显式配置对外 HTTP 地址时，使用服务器已经绑定的真实随机端口。
+	httpEndpoint := registration.GetEnvOrDefault("HTTP_ADVERTISE_ADDR", "")
+	if httpEndpoint == "" {
+		endpoint, err := hs.Endpoint()
+		if err != nil {
+			return nil, fmt.Errorf("resolve HTTP advertise endpoint: %w", err)
+		}
+		httpEndpoint = endpoint.Host
+	}
+
 	// 注册信息供 Core 发现本模块、建立动态代理并创建菜单与权限。
 	globalRegistration = registration.StartRegistration(ctx, ctx.GetLogger(), &registration.Config{
 		ModuleID:          moduleID,
@@ -42,7 +53,7 @@ func newApp(
 		Description:       description,
 		GRPCEndpoint:      registration.GetGRPCAdvertiseAddr(ctx, "127.0.0.1:10400"),
 		FrontendEntryUrl:  registration.GetEnvOrDefault("FRONTEND_ENTRY_URL", ""),
-		HttpEndpoint:      registration.GetEnvOrDefault("HTTP_ADVERTISE_ADDR", ""),
+		HttpEndpoint:      httpEndpoint,
 		AdminEndpoint:     registration.GetEnvOrDefault("ADMIN_GRPC_ENDPOINT", ""),
 		OpenapiSpec:       assets.OpenAPIData,
 		ProtoDescriptor:   assets.DescriptorData,
@@ -52,7 +63,7 @@ func newApp(
 		MaxRetries:        60,
 	})
 
-	return bootstrap.NewApp(ctx, gs, hs)
+	return bootstrap.NewApp(ctx, gs, hs), nil
 }
 
 // runApp 创建应用上下文、执行 Wire 生成的依赖注入函数，并托管完整生命周期。

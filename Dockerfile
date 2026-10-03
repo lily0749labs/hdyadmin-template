@@ -74,7 +74,9 @@ ARG APP_VERSION=1.0.0
 
 RUN apk --no-cache add ca-certificates tzdata
 
-ENV TZ=UTC
+# 容器拥有独立网络命名空间，因此内部使用固定端口不会与其他模块容器冲突。
+ENV TZ=UTC \
+    MODULE_HTTP_ADDR=0.0.0.0:10401
 WORKDIR /app
 
 # 运行镜像只包含可执行文件和默认配置，不携带源码或构建工具链。
